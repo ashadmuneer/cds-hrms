@@ -1,0 +1,5 @@
+node_modules/
+gen/
+db/*.db
+*.log
+.env

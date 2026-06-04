@@ -1,0 +1,3 @@
+ID;course;description;employee_ID;dueDate;status;score;completedAt
+eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee1;Code of Conduct;Mandatory employee conduct training;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa2;2026-06-30;InProgress;;
+eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee2;Information Security;Security awareness fundamentals;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa3;2026-05-20;Completed;92.50;2026-05-18

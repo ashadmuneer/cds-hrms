@@ -1,0 +1,86 @@
+{
+  "name": "employee-onboarding-platform",
+  "version": "1.0.0",
+  "description": "Enterprise employee onboarding platform built with SAP CAP and Fiori Elements",
+  "private": true,
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "build": "cds build",
+    "test": "cds compile db srv --to csn",
+    "watch-employees": "cds watch --open employees/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-departments": "cds watch --open departments/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-onboarding-tasks": "cds watch --open onboardingtasks/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-documents": "cds watch --open documents/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-assets": "cds watch --open assets/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-trainings": "cds watch --open trainings/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-dashboard": "cds watch --open dashboard/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-reports": "cds watch --open reports/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "dependencies": {
+    "@cap-js/sqlite": "^2",
+    "@sap/cds": "^9",
+    "express": "^5"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^9",
+    "cds-plugin-ui5": "^0.14"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "cds": {
+    "features": {
+      "fiori_preview": true
+    },
+    "fiori": {
+      "draft_deletion_timeout": "14d"
+    },
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db/onboarding.db"
+        }
+      },
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "hr.admin": {
+            "roles": [
+              "HRAdmin"
+            ]
+          },
+          "hr.manager": {
+            "roles": [
+              "HRManager"
+            ]
+          },
+          "it.admin": {
+            "roles": [
+              "ITAdmin"
+            ]
+          },
+          "employee": {
+            "roles": [
+              "Employee"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/employees",
+    "app/departments",
+    "app/onboarding-tasks",
+    "app/documents",
+    "app/assets",
+    "app/trainings",
+    "app/dashboard",
+    "app/reports"
+  ]
+}
