@@ -49,7 +49,7 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.fe.templates": {}
+        "sap.ui.layout": {}
       }
     },
     "contentDensities": {
@@ -78,78 +78,16 @@
       }
     },
     "resources": {
-      "css": []
+      "css": [
+        {
+          "uri": "css/dashboard.css"
+        }
+      ]
     },
-    "routing": {
-      "config": {},
-      "routes": [
-        {
-          "pattern": ":?query:",
-          "name": "EmployeeOverviewList",
-          "target": "EmployeeOverviewList"
-        },
-        {
-          "pattern": "EmployeeOverview({key}):?query:",
-          "name": "EmployeeOverviewObjectPage",
-          "target": "EmployeeOverviewObjectPage"
-        }
-      ],
-      "targets": {
-        "EmployeeOverviewList": {
-          "type": "Component",
-          "id": "EmployeeOverviewList",
-          "name": "sap.fe.templates.ListReport",
-          "options": {
-            "settings": {
-              "contextPath": "/EmployeeOverview",
-              "variantManagement": "Page",
-              "navigation": {
-                "EmployeeOverview": {
-                  "detail": {
-                    "route": "EmployeeOverviewObjectPage"
-                  }
-                }
-              },
-              "controlConfiguration": {
-                "@com.sap.vocabularies.UI.v1.LineItem": {
-                  "tableSettings": {
-                    "type": "AnalyticalTable",
-                    "selectionMode": "None"
-                  }
-                }
-              },
-              "views": {
-                "paths": [
-                  {
-                    "primary": [
-                      {
-                        "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant"
-                      }
-                    ],
-                    "secondary": [
-                      {
-                        "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
-                      }
-                    ],
-                    "defaultPath": "both"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "EmployeeOverviewObjectPage": {
-          "type": "Component",
-          "id": "EmployeeOverviewObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
-          "options": {
-            "settings": {
-              "editableHeaderContent": false,
-              "contextPath": "/EmployeeOverview"
-            }
-          }
-        }
-      }
+    "rootView": {
+      "viewName": "dashboard.view.App",
+      "type": "XML",
+      "id": "app"
     }
   },
   "sap.fiori": {

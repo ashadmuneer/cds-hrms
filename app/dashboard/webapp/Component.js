@@ -1,11 +1,15 @@
 sap.ui.define(
-    ["sap/fe/core/AppComponent"],
-    function (Component) {
+    ["sap/ui/core/UIComponent"],
+    function (UIComponent) {
         "use strict";
 
-        return Component.extend("dashboard.Component", {
+        return UIComponent.extend("dashboard.Component", {
             metadata: {
                 manifest: "json"
+            },
+
+            init: function () {
+                UIComponent.prototype.init.apply(this, arguments);
             }
         });
     }

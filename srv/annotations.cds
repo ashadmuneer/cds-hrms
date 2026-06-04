@@ -117,6 +117,31 @@ annotate service.Employees:manager with @Common.ValueList: {
 };
 
 annotate service.EmployeeOverview with @(
+  Aggregation.CustomAggregate#onboardingProgress: 'Edm.Decimal',
+  Aggregation.ApplySupported: {
+    Transformations: [
+      'aggregate',
+      'groupby',
+      'filter',
+      'search',
+      'top',
+      'skip',
+      'orderby'
+    ],
+    Rollup: #None,
+    PropertyRestrictions: true,
+    GroupableProperties: [
+      employeeNumber,
+      firstName,
+      lastName,
+      departmentName,
+      joiningDate,
+      status
+    ],
+    AggregatableProperties: [
+      { Property: onboardingProgress }
+    ]
+  },
   UI.HeaderInfo: {
     TypeName: 'Employee Overview',
     TypeNamePlural: 'Employee Overview',
@@ -154,4 +179,9 @@ annotate service.EmployeeOverview with @(
     Visualizations: ['@UI.Chart', '@UI.LineItem'],
     SortOrder: [{ Property: joiningDate, Descending: true }]
   }
+);
+
+annotate service.EmployeeOverview:onboardingProgress with @(
+  Analytics.Measure: true,
+  Aggregation.default: #AVG
 );

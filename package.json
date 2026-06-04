@@ -82,5 +82,18 @@
     "app/trainings",
     "app/dashboard",
     "app/reports"
-  ]
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashadmuneer/cds-hrms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ashadmuneer/cds-hrms/issues"
+  },
+  "homepage": "https://github.com/ashadmuneer/cds-hrms#readme"
 }
