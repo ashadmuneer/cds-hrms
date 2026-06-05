@@ -29,14 +29,14 @@ modules:
         properties:
           srv-url: ${default-url}
 
-  # ✅ DB
+  # ✅ Database
   - name: employee-onboarding-db-deployer
     type: hdb
     path: gen/db
     requires:
       - name: employee-onboarding-db
 
-  # ✅ Approuter (ONLY entry point)
+  # ✅ App Router (UI entry point)
   - name: employee-onboarding-router
     type: approuter.nodejs
     path: app/router
@@ -54,22 +54,13 @@ modules:
           url: ~{srv-url}
           forwardAuthToken: true
 
-  # ✅ Build ALL UI apps (no CF apps created)
+  # ✅ Build UI apps (NO npm install here)
   - name: html5-apps
     type: html5
     path: app
     build-parameters:
       builder: custom
       commands:
-        - npm install --prefix dashboard
-        - npm install --prefix employees
-        - npm install --prefix departments
-        - npm install --prefix documents
-        - npm install --prefix assets
-        - npm install --prefix trainings
-        - npm install --prefix reports
-        - npm install --prefix onboarding-tasks
-
         - npx ui5 build --all --config dashboard/ui5.yaml
         - npx ui5 build --all --config employees/ui5.yaml
         - npx ui5 build --all --config departments/ui5.yaml
@@ -78,10 +69,9 @@ modules:
         - npx ui5 build --all --config trainings/ui5.yaml
         - npx ui5 build --all --config reports/ui5.yaml
         - npx ui5 build --all --config onboarding-tasks/ui5.yaml
-
       build-result: resources
 
-  # ✅ Deploy UI to HTML5 repository
+  # ✅ Deploy UI apps to HTML5 repo
   - name: html5-content
     type: com.sap.application.content
     path: app
