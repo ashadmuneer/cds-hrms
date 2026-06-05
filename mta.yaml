@@ -1,7 +1,6 @@
 _schema-version: "3.1"
 ID: employee-onboarding-platform
 version: 1.0.0
-description: Employee onboarding platform with CAP, Fiori, AppRouter, and XSUAA
 
 parameters:
   enable-parallel-deployments: true
@@ -14,10 +13,13 @@ build-parameters:
         - npx cds build --production
 
 modules:
+
+  # ✅ CAP Backend
   - name: employee-onboarding-srv
     type: nodejs
     path: gen/srv
     parameters:
+      memory: 512M
       buildpack: nodejs_buildpack
     requires:
       - name: employee-onboarding-db
@@ -27,43 +29,101 @@ modules:
         properties:
           srv-url: ${default-url}
 
+  # ✅ DB
   - name: employee-onboarding-db-deployer
     type: hdb
     path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
     requires:
       - name: employee-onboarding-db
 
+  # ✅ Approuter (ONLY entry point)
   - name: employee-onboarding-router
     type: approuter.nodejs
     path: app/router
     parameters:
-      buildpack: nodejs_buildpack
+      memory: 256M
+      keep-existing-routes: true
     requires:
+      - name: employee-onboarding-auth
+      - name: employee-onboarding-html5-runtime
+      - name: employee-onboarding-destination
       - name: srv-api
         group: destinations
         properties:
           name: srv-api
           url: ~{srv-url}
           forwardAuthToken: true
-      - name: employee-onboarding-auth
+
+  # ✅ Build ALL UI apps (no CF apps created)
+  - name: html5-apps
+    type: html5
+    path: app
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install --prefix dashboard
+        - npm install --prefix employees
+        - npm install --prefix departments
+        - npm install --prefix documents
+        - npm install --prefix assets
+        - npm install --prefix trainings
+        - npm install --prefix reports
+        - npm install --prefix onboarding-tasks
+
+        - npx ui5 build --all --config dashboard/ui5.yaml
+        - npx ui5 build --all --config employees/ui5.yaml
+        - npx ui5 build --all --config departments/ui5.yaml
+        - npx ui5 build --all --config documents/ui5.yaml
+        - npx ui5 build --all --config assets/ui5.yaml
+        - npx ui5 build --all --config trainings/ui5.yaml
+        - npx ui5 build --all --config reports/ui5.yaml
+        - npx ui5 build --all --config onboarding-tasks/ui5.yaml
+
+      build-result: resources
+
+  # ✅ Deploy UI to HTML5 repository
+  - name: html5-content
+    type: com.sap.application.content
+    path: app
+    requires:
+      - name: employee-onboarding-html5-host
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: html5-apps
+          artifacts:
+            - resources/**
+          target-path: resources/
 
 resources:
+
   - name: employee-onboarding-db
     type: com.sap.xs.hdi-container
     parameters:
       service: hana
       service-plan: hdi-shared
-    properties:
-      hdi-service-name: ${service-name}
 
   - name: employee-onboarding-auth
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: employee-onboarding-platform-${org}-${space}
-        tenant-mode: dedicated
+      path: xs-security.json
+
+  - name: employee-onboarding-html5-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  - name: employee-onboarding-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  - name: employee-onboarding-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite

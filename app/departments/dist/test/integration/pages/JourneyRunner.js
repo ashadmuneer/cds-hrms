@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/JourneyRunner","departments/test/integration/pages/DepartmentsList","departments/test/integration/pages/DepartmentsObjectPage"],function(e,t,n){"use strict";var s=new e({launchUrl:sap.ui.require.toUrl("departments")+"/test/flpSandbox.html#departments-tile",pages:{onTheDepartmentsList:t,onTheDepartmentsObjectPage:n},async:true});return s});
+//# sourceMappingURL=JourneyRunner.js.map

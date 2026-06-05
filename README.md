@@ -6,7 +6,7 @@ Portfolio-quality SAP CAP and Fiori Elements application for managing employee o
 
 ```sh
 npm install
-npm run watch
+npm run watchnpm install @sap/cds
 ```
 
 Open `http://localhost:4004` and sign in with one of the mocked users:

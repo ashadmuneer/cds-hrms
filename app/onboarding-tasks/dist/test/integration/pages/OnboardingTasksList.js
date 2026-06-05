@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/ListReport"],function(s){"use strict";var n={actions:{},assertions:{}};return new s({appId:"onboardingtasks",componentId:"OnboardingTasksList",contextPath:"/OnboardingTasks"},n)});
+//# sourceMappingURL=OnboardingTasksList.js.map

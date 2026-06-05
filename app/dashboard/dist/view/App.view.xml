@@ -1,0 +1,412 @@
+<mvc:View
+    controllerName="dashboard.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <App>
+        <Page
+            title="{i18n>appTitle}"
+            showNavButton="false"
+            class="dashboardPage">
+            <customHeader>
+                <OverflowToolbar class="dashboardHeader">
+                    <Title text="{i18n>appTitle}" level="H1"/>
+                    <ToolbarSpacer/>
+                    <ObjectStatus
+                        text="{dashboard>/lastUpdatedText}"
+                        icon="sap-icon://synchronize"
+                        state="Information"/>
+                    <ObjectStatus
+                        text="{dashboard>/session/userText}"
+                        icon="sap-icon://person-placeholder"
+                        state="None"/>
+                    <ObjectStatus
+                        text="{dashboard>/session/roleText}"
+                        icon="sap-icon://key-user-settings"
+                        state="Information"/>
+                    <Button
+                        text="{i18n>employees}"
+                        icon="sap-icon://employee"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/employees}">
+                        <customData>
+                            <core:CustomData key="target" value="employees"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>departments}"
+                        icon="sap-icon://org-chart"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/departments}">
+                        <customData>
+                            <core:CustomData key="target" value="departments"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>tasks}"
+                        icon="sap-icon://task"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/tasks}">
+                        <customData>
+                            <core:CustomData key="target" value="tasks"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>documents}"
+                        icon="sap-icon://documents"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/documents}">
+                        <customData>
+                            <core:CustomData key="target" value="documents"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>assets}"
+                        icon="sap-icon://laptop"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/assets}">
+                        <customData>
+                            <core:CustomData key="target" value="assets"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>training}"
+                        icon="sap-icon://learning-assistant"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/trainings}">
+                        <customData>
+                            <core:CustomData key="target" value="trainings"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>reports}"
+                        icon="sap-icon://business-objects-experience"
+                        type="Transparent"
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/reports}">
+                        <customData>
+                            <core:CustomData key="target" value="reports"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://refresh"
+                        type="Transparent"
+                        tooltip="{i18n>refresh}"
+                        press=".onRefresh"/>
+                </OverflowToolbar>
+            </customHeader>
+            <content>
+                <ScrollContainer height="100%" vertical="true" horizontal="false">
+                    <VBox class="dashboardShell" busy="{dashboard>/busy}">
+                        <HBox class="dashboardHero" renderType="Bare" wrap="Wrap" alignItems="Center">
+                            <VBox class="dashboardHeroText">
+                                <Title text="{i18n>dashboardTitle}" level="H2"/>
+                                <Text text="{i18n>dashboardSubtitle}" class="dashboardSubtleText"/>
+                            </VBox>
+                            <ToolbarSpacer/>
+                            <HBox class="dashboardHeroMetrics" renderType="Bare" wrap="Wrap">
+                                <ObjectNumber
+                                    number="{dashboard>/kpis/avgProgress/value}"
+                                    unit="%"
+                                    emphasized="true"
+                                    state="{dashboard>/kpis/avgProgress/state}"/>
+                                <ObjectNumber
+                                    number="{dashboard>/kpis/pendingTasks/value}"
+                                    unit="{i18n>tasks}"
+                                    emphasized="true"
+                                    state="{dashboard>/kpis/pendingTasks/state}"/>
+                                <ObjectNumber
+                                    number="{dashboard>/kpis/overdueTasks/value}"
+                                    unit="{i18n>overdue}"
+                                    emphasized="true"
+                                    state="{dashboard>/kpis/overdueTasks/state}"/>
+                            </HBox>
+                        </HBox>
+
+                        <IconTabBar
+                            expandable="false"
+                            class="dashboardTabs"
+                            selectedKey="overview">
+                            <items>
+                                <IconTabFilter key="overview" text="{i18n>overview}" icon="sap-icon://business-objects-experience">
+                                    <VBox class="dashboardTabContent">
+                                        <FlexBox
+                                            class="kpiGrid"
+                                            renderType="Bare"
+                                            wrap="Wrap"
+                                            alignItems="Stretch">
+                                            <GenericTile header="{i18n>employees}" subheader="{i18n>employeesSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/employees}">
+                                                <customData>
+                                                    <core:CustomData key="target" value="employees"/>
+                                                </customData>
+                                                <tileContent>
+                                                    <TileContent unit="{i18n>people}">
+                                                        <NumericContent
+                                                            icon="sap-icon://employee"
+                                                            value="{dashboard>/kpis/totalEmployees/value}"
+                                                            valueColor="Neutral"/>
+                                                    </TileContent>
+                                                </tileContent>
+                                            </GenericTile>
+                                            <GenericTile header="{i18n>avgProgress}" subheader="{i18n>avgProgressSub}" class="kpiTile">
+                                                <tileContent>
+                                                    <TileContent unit="%">
+                                                        <NumericContent
+                                                            icon="sap-icon://process"
+                                                            value="{dashboard>/kpis/avgProgress/value}"
+                                                            valueColor="{dashboard>/kpis/avgProgress/color}"/>
+                                                    </TileContent>
+                                                </tileContent>
+                                            </GenericTile>
+                                            <GenericTile header="{i18n>pendingTasks}" subheader="{i18n>pendingTasksSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/tasks}">
+                                                <customData>
+                                                    <core:CustomData key="target" value="tasks"/>
+                                                </customData>
+                                                <tileContent>
+                                                    <TileContent unit="{i18n>open}">
+                                                        <NumericContent
+                                                            icon="sap-icon://task"
+                                                            value="{dashboard>/kpis/pendingTasks/value}"
+                                                            valueColor="{dashboard>/kpis/pendingTasks/color}"/>
+                                                    </TileContent>
+                                                </tileContent>
+                                            </GenericTile>
+                                            <GenericTile header="{i18n>documents}" subheader="{i18n>documentsSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/documents}">
+                                                <customData>
+                                                    <core:CustomData key="target" value="documents"/>
+                                                </customData>
+                                                <tileContent>
+                                                    <TileContent unit="{i18n>open}">
+                                                        <NumericContent
+                                                            icon="sap-icon://documents"
+                                                            value="{dashboard>/kpis/openDocuments/value}"
+                                                            valueColor="{dashboard>/kpis/openDocuments/color}"/>
+                                                    </TileContent>
+                                                </tileContent>
+                                            </GenericTile>
+                                            <GenericTile header="{i18n>assets}" subheader="{i18n>assetsSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/assets}">
+                                                <customData>
+                                                    <core:CustomData key="target" value="assets"/>
+                                                </customData>
+                                                <tileContent>
+                                                    <TileContent unit="{i18n>available}">
+                                                        <NumericContent
+                                                            icon="sap-icon://laptop"
+                                                            value="{dashboard>/kpis/availableAssets/value}"
+                                                            valueColor="Good"/>
+                                                    </TileContent>
+                                                </tileContent>
+                                            </GenericTile>
+                                            <GenericTile header="{i18n>training}" subheader="{i18n>trainingSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/trainings}">
+                                                <customData>
+                                                    <core:CustomData key="target" value="trainings"/>
+                                                </customData>
+                                                <tileContent>
+                                                    <TileContent unit="%">
+                                                        <NumericContent
+                                                            icon="sap-icon://learning-assistant"
+                                                            value="{dashboard>/kpis/trainingCompletion/value}"
+                                                            valueColor="{dashboard>/kpis/trainingCompletion/color}"/>
+                                                    </TileContent>
+                                                </tileContent>
+                                            </GenericTile>
+                                        </FlexBox>
+
+                                        <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
+                                            <Panel headerText="{i18n>departmentProgress}" class="dashboardPanel">
+                                                <List items="{dashboard>/departmentProgress}" showSeparators="Inner">
+                                                    <CustomListItem>
+                                                        <VBox class="chartRow">
+                                                            <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                                                <ObjectIdentifier title="{dashboard>name}" text="{dashboard>countText}"/>
+                                                                <ObjectNumber number="{dashboard>avgProgress}" unit="%" state="{dashboard>state}"/>
+                                                            </HBox>
+                                                            <ProgressIndicator
+                                                                percentValue="{dashboard>avgProgress}"
+                                                                displayValue="{dashboard>avgProgressText}"
+                                                                state="{dashboard>state}"/>
+                                                        </VBox>
+                                                    </CustomListItem>
+                                                </List>
+                                            </Panel>
+
+                                            <Panel headerText="{i18n>attentionRequired}" class="dashboardPanel">
+                                                <List items="{dashboard>/peopleAtRisk}" noDataText="{i18n>noRisks}" showSeparators="Inner">
+                                                    <ObjectListItem
+                                                        title="{dashboard>name}"
+                                                        number="{dashboard>progress}"
+                                                        numberUnit="%"
+                                                        numberState="{dashboard>state}"
+                                                        intro="{dashboard>employeeNumber}">
+                                                        <attributes>
+                                                            <ObjectAttribute text="{dashboard>departmentName}"/>
+                                                            <ObjectAttribute text="{dashboard>statusText}"/>
+                                                        </attributes>
+                                                    </ObjectListItem>
+                                                </List>
+                                            </Panel>
+                                        </HBox>
+                                    </VBox>
+                                </IconTabFilter>
+
+                                <IconTabFilter key="kpis" text="{i18n>kpiPage}" icon="sap-icon://performance">
+                                    <VBox class="dashboardTabContent">
+                                        <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
+                                            <Panel headerText="{i18n>executiveScorecard}" class="dashboardPanel widePanel">
+                                                <VBox class="scorecard">
+                                                    <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
+                                                        <Text text="{i18n>avgProgress}"/>
+                                                        <ProgressIndicator
+                                                            width="55%"
+                                                            percentValue="{dashboard>/kpis/avgProgress/value}"
+                                                            displayValue="{dashboard>/kpis/avgProgress/display}"
+                                                            state="{dashboard>/kpis/avgProgress/state}"/>
+                                                    </HBox>
+                                                    <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
+                                                        <Text text="{i18n>trainingCompletion}"/>
+                                                        <ProgressIndicator
+                                                            width="55%"
+                                                            percentValue="{dashboard>/kpis/trainingCompletion/value}"
+                                                            displayValue="{dashboard>/kpis/trainingCompletion/display}"
+                                                            state="{dashboard>/kpis/trainingCompletion/state}"/>
+                                                    </HBox>
+                                                    <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
+                                                        <Text text="{i18n>taskClosure}"/>
+                                                        <ProgressIndicator
+                                                            width="55%"
+                                                            percentValue="{dashboard>/kpis/taskClosure/value}"
+                                                            displayValue="{dashboard>/kpis/taskClosure/display}"
+                                                            state="{dashboard>/kpis/taskClosure/state}"/>
+                                                    </HBox>
+                                                    <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
+                                                        <Text text="{i18n>documentReadiness}"/>
+                                                        <ProgressIndicator
+                                                            width="55%"
+                                                            percentValue="{dashboard>/kpis/documentReadiness/value}"
+                                                            displayValue="{dashboard>/kpis/documentReadiness/display}"
+                                                            state="{dashboard>/kpis/documentReadiness/state}"/>
+                                                    </HBox>
+                                                </VBox>
+                                            </Panel>
+                                            <Panel headerText="{i18n>operationalRisk}" class="dashboardPanel">
+                                                <List>
+                                                    <ObjectListItem title="{i18n>overdueTasks}" number="{dashboard>/kpis/overdueTasks/value}" numberState="{dashboard>/kpis/overdueTasks/state}"/>
+                                                    <ObjectListItem title="{i18n>highPriorityTasks}" number="{dashboard>/kpis/highPriorityTasks/value}" numberState="{dashboard>/kpis/highPriorityTasks/state}"/>
+                                                    <ObjectListItem title="{i18n>pendingDocuments}" number="{dashboard>/kpis/openDocuments/value}" numberState="{dashboard>/kpis/openDocuments/state}"/>
+                                                    <ObjectListItem title="{i18n>inactiveEmployees}" number="{dashboard>/kpis/inactiveEmployees/value}" numberState="{dashboard>/kpis/inactiveEmployees/state}"/>
+                                                </List>
+                                            </Panel>
+                                        </HBox>
+                                    </VBox>
+                                </IconTabFilter>
+
+                                <IconTabFilter key="charts" text="{i18n>charts}" icon="sap-icon://business-objects-mobile">
+                                    <VBox class="dashboardTabContent">
+                                        <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
+                                            <Panel headerText="{i18n>employeeStatus}" class="dashboardPanel">
+                                                <List items="{dashboard>/statusDistribution}" showSeparators="Inner">
+                                                    <CustomListItem>
+                                                        <VBox class="chartRow">
+                                                            <HBox justifyContent="SpaceBetween">
+                                                                <ObjectStatus text="{dashboard>status}" state="{dashboard>state}"/>
+                                                                <Text text="{dashboard>shareText}"/>
+                                                            </HBox>
+                                                            <ProgressIndicator
+                                                                percentValue="{dashboard>share}"
+                                                                displayValue="{dashboard>countText}"
+                                                                state="{dashboard>state}"/>
+                                                        </VBox>
+                                                    </CustomListItem>
+                                                </List>
+                                            </Panel>
+                                            <Panel headerText="{i18n>taskStatus}" class="dashboardPanel">
+                                                <List items="{dashboard>/taskDistribution}" showSeparators="Inner">
+                                                    <CustomListItem>
+                                                        <VBox class="chartRow">
+                                                            <HBox justifyContent="SpaceBetween">
+                                                                <ObjectStatus text="{dashboard>status}" state="{dashboard>state}"/>
+                                                                <Text text="{dashboard>shareText}"/>
+                                                            </HBox>
+                                                            <ProgressIndicator
+                                                                percentValue="{dashboard>share}"
+                                                                displayValue="{dashboard>countText}"
+                                                                state="{dashboard>state}"/>
+                                                        </VBox>
+                                                    </CustomListItem>
+                                                </List>
+                                            </Panel>
+                                            <Panel headerText="{i18n>assetMix}" class="dashboardPanel">
+                                                <List items="{dashboard>/assetDistribution}" showSeparators="Inner">
+                                                    <CustomListItem>
+                                                        <VBox class="chartRow">
+                                                            <HBox justifyContent="SpaceBetween">
+                                                                <ObjectStatus text="{dashboard>status}" state="{dashboard>state}"/>
+                                                                <Text text="{dashboard>shareText}"/>
+                                                            </HBox>
+                                                            <ProgressIndicator
+                                                                percentValue="{dashboard>share}"
+                                                                displayValue="{dashboard>countText}"
+                                                                state="{dashboard>state}"/>
+                                                        </VBox>
+                                                    </CustomListItem>
+                                                </List>
+                                            </Panel>
+                                        </HBox>
+                                    </VBox>
+                                </IconTabFilter>
+
+                                <IconTabFilter key="worklist" text="{i18n>worklist}" icon="sap-icon://activities">
+                                    <VBox class="dashboardTabContent">
+                                        <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
+                                            <Panel headerText="{i18n>priorityTasks}" class="dashboardPanel widePanel">
+                                                <Table items="{dashboard>/priorityTasks}" noDataText="{i18n>noPriorityTasks}">
+                                                    <columns>
+                                                        <Column><Text text="{i18n>task}"/></Column>
+                                                        <Column><Text text="{i18n>owner}"/></Column>
+                                                        <Column><Text text="{i18n>dueDate}"/></Column>
+                                                        <Column><Text text="{i18n>priority}"/></Column>
+                                                        <Column><Text text="{i18n>status}"/></Column>
+                                                    </columns>
+                                                    <items>
+                                                        <ColumnListItem>
+                                                            <cells>
+                                                                <Text text="{dashboard>taskName}"/>
+                                                                <Text text="{dashboard>assignedTo}"/>
+                                                                <Text text="{dashboard>dueDateText}"/>
+                                                                <ObjectStatus text="{dashboard>priority}" state="{dashboard>priorityState}"/>
+                                                                <ObjectStatus text="{dashboard>status}" state="{dashboard>state}"/>
+                                                            </cells>
+                                                        </ColumnListItem>
+                                                    </items>
+                                                </Table>
+                                            </Panel>
+                                            <Panel headerText="{i18n>documentQueue}" class="dashboardPanel">
+                                                <List items="{dashboard>/documentQueue}" noDataText="{i18n>noDocuments}">
+                                                    <ObjectListItem
+                                                        title="{dashboard>documentType}"
+                                                        intro="{dashboard>fileName}"
+                                                        number="{dashboard>status}"
+                                                        numberState="{dashboard>state}">
+                                                        <attributes>
+                                                            <ObjectAttribute text="{dashboard>uploadedDateText}"/>
+                                                        </attributes>
+                                                    </ObjectListItem>
+                                                </List>
+                                            </Panel>
+                                        </HBox>
+                                    </VBox>
+                                </IconTabFilter>
+                            </items>
+                        </IconTabBar>
+                    </VBox>
+                </ScrollContainer>
+            </content>
+        </Page>
+    </App>
+</mvc:View>

@@ -25,7 +25,7 @@
     "express": "^5"
   },
   "devDependencies": {
-    "@sap/cds-dk": "^9",
+    "@sap/cds-dk": "^9.9.2",
     "cds-plugin-ui5": "^0.14"
   },
   "engines": {
