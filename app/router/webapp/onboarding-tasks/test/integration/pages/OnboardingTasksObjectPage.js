@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/ObjectPage","sap/ui/test/actions/Press"],function(t,n){"use strict";var e={actions:{iPressSectionIconTabFilterButton:function(t){return this.waitFor({id:new RegExp(`.*--fe::FacetSection::${t}-anchor$`),actions:new n})}},assertions:{}};return new t({appId:"onboardingtasks",componentId:"OnboardingTasksObjectPage",contextPath:"/OnboardingTasks"},e)});
+//# sourceMappingURL=OnboardingTasksObjectPage.js.map

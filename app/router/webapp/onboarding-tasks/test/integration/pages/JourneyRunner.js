@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/JourneyRunner","onboardingtasks/test/integration/pages/OnboardingTasksList","onboardingtasks/test/integration/pages/OnboardingTasksObjectPage"],function(n,s,a){"use strict";var t=new n({launchUrl:sap.ui.require.toUrl("onboardingtasks")+"/test/flpSandbox.html#onboardingtasks-tile",pages:{onTheOnboardingTasksList:s,onTheOnboardingTasksObjectPage:a},async:true});return t});
+//# sourceMappingURL=JourneyRunner.js.map

@@ -157,7 +157,8 @@
 					"options": {
 						"settings": {
 							"editableHeaderContent": false,
-							"contextPath": "/OnboardingTasks"
+							"contextPath": "/OnboardingTasks",
+							"showBreadcrumbs": true
 						}
 					}
 				}

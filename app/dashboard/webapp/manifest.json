@@ -92,7 +92,8 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.ui.layout": {}
+        "sap.ui.layout": {},
+        "sap.fe.templates": {}
       }
     },
     "contentDensities": {
@@ -114,6 +115,10 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
       }
     },
     "resources": {
@@ -123,10 +128,41 @@
         }
       ]
     },
-    "rootView": {
-      "viewName": "dashboard.view.App",
-      "type": "XML",
-      "id": "app"
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "DashboardList",
+          "target": "DashboardList"
+        }
+      ],
+      "targets": {
+        "DashboardList": {
+          "type": "Component",
+          "id": "DashboardList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/EmployeeOverview",
+              "variantManagement": "Page",
+              "initialLoad": true,
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                },
+                "@com.sap.vocabularies.UI.v1.Chart": {
+                  "chartSettings": {
+                    "personalization": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "sap.fiori": {

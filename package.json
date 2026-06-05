@@ -7,6 +7,7 @@
     "start": "cds-serve",
     "watch": "cds watch",
     "build": "cds build",
+    "clean": "rm -rf gen mta_archives resources app/*/dist app/*/archive && npm cache clean --force",
     "test": "cds compile db srv --to csn",
     "watch-employees": "cds watch --open employees/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-departments": "cds watch --open departments/index.html?sap-ui-xx-viewCache=false --livereload false",
@@ -50,8 +51,8 @@
           "kind": "hana"
         }
       },
-      "[development]": {
-        "auth": {
+      "auth": {
+        "[development]": {
           "kind": "mocked",
           "users": {
             "hr.admin": {
@@ -75,10 +76,8 @@
               ]
             }
           }
-        }
-      },
-      "[production]": {
-        "auth": {
+        },
+        "[production]": {
           "kind": "xsuaa"
         }
       }

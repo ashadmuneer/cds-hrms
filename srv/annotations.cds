@@ -1,5 +1,48 @@
 using OnboardingService as service from './onboarding-service';
 
+// ---------------------------------------------------------------------------
+// USER-FRIENDLY FIELD LABELS, PLACEHOLDERS (QUICK INFO), AND VALIDATIONS
+// ---------------------------------------------------------------------------
+annotate service.Employees with {
+  employeeNumber @title: 'Employee ID' @Common.QuickInfo: 'Unique employee identifier (e.g., EMP-1001)' @mandatory;
+  firstName @title: 'First Name' @Common.QuickInfo: 'Enter the employee''s legal first name (e.g., Jane)' @mandatory;
+  lastName @title: 'Last Name' @Common.QuickInfo: 'Enter the employee''s legal last name' @mandatory;
+  email @title: 'Email Address' @Common.QuickInfo: 'Use corporate format: firstname.lastname@company.com' @mandatory @assert.format: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  phone @title: 'Phone Number' @Common.QuickInfo: 'Include the country code (e.g., +1 555-0100)';
+  dateOfBirth @title: 'Date of Birth' @Common.QuickInfo: 'Select the date of birth (Format: YYYY-MM-DD)';
+  gender @title: 'Gender' @Common.QuickInfo: 'Specify the employee''s gender';
+  department_ID @title: 'Department' @Common.QuickInfo: 'Select the department from the dropdown list' @mandatory;
+  manager_ID @title: 'Manager' @Common.QuickInfo: 'Select the assigned manager from the dropdown list';
+  designation @title: 'Job Title' @Common.QuickInfo: 'Enter the official job title (e.g., Software Engineer)';
+  joiningDate @title: 'Joining Date' @Common.QuickInfo: 'Select the official start date' @mandatory;
+  employmentType @title: 'Employment Type' @Common.QuickInfo: 'e.g., Full-Time, Part-Time, Contract';
+  location @title: 'Location' @Common.QuickInfo: 'Specify the office location or Remote';
+  status @title: 'Employment Status' @Common.QuickInfo: 'e.g., Onboarding, Active, Terminated';
+  onboardingProgress @title: 'Onboarding Progress (%)' @Common.QuickInfo: 'Calculated completion percentage of onboarding tasks';
+  permanentAddress @title: 'Permanent Address' @Common.QuickInfo: 'Enter the full permanent residential address';
+  currentAddress @title: 'Current Address' @Common.QuickInfo: 'Enter the current residential address';
+  city @title: 'City' @Common.QuickInfo: 'Enter the city';
+  state @title: 'State / Province' @Common.QuickInfo: 'Enter the state or province';
+  country @title: 'Country' @Common.QuickInfo: 'Enter the country';
+  zipCode @title: 'ZIP / Postal Code' @Common.QuickInfo: 'Enter the postal code';
+  emergencyContactName @title: 'Emergency Contact Name' @Common.QuickInfo: 'Full name of the emergency contact';
+  emergencyRelationship @title: 'Relationship' @Common.QuickInfo: 'e.g., Spouse, Parent, Sibling';
+  emergencyPhone @title: 'Emergency Phone' @Common.QuickInfo: 'Include the country code (e.g., +1 555-0100)';
+};
+
+annotate service.OnboardingTasks with {
+  taskName @title: 'Task Name' @Common.QuickInfo: 'Short, descriptive title for the task' @mandatory;
+  description @title: 'Task Description' @Common.QuickInfo: 'Detailed instructions for the task';
+  employee_ID @title: 'Employee' @Common.QuickInfo: 'Select the employee this task belongs to' @mandatory;
+  assignedTo @title: 'Assigned To' @Common.QuickInfo: 'Email or role responsible for completing the task';
+  dueDate @title: 'Due Date' @Common.QuickInfo: 'Deadline for task completion';
+  priority @title: 'Priority' @Common.QuickInfo: 'e.g., High, Medium, Low';
+  status @title: 'Status' @Common.QuickInfo: 'e.g., Open, In Progress, Completed';
+};
+
+// ---------------------------------------------------------------------------
+// UI FACETS AND LIST REPORT ANNOTATIONS
+// ---------------------------------------------------------------------------
 annotate service.Employees with @(
   UI.HeaderInfo: {
     TypeName: 'Employee',

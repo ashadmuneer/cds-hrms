@@ -13,14 +13,12 @@ build-parameters:
         - npx cds build --production
 
 modules:
-
   # ✅ CAP Backend
   - name: employee-onboarding-srv
     type: nodejs
     path: gen/srv
     parameters:
       memory: 512M
-      buildpack: nodejs_buildpack
     requires:
       - name: employee-onboarding-db
       - name: employee-onboarding-auth
@@ -29,23 +27,23 @@ modules:
         properties:
           srv-url: ${default-url}
 
-  # ✅ Database
+  # ✅ DB Deployer
   - name: employee-onboarding-db-deployer
     type: hdb
     path: gen/db
+    parameters:
+      memory: 256M
     requires:
       - name: employee-onboarding-db
 
-  # ✅ App Router (UI entry point)
+  # ✅ App Router
   - name: employee-onboarding-router
     type: approuter.nodejs
     path: app/router
     parameters:
       memory: 256M
-      keep-existing-routes: true
     requires:
       - name: employee-onboarding-auth
-      - name: employee-onboarding-html5-runtime
       - name: employee-onboarding-destination
       - name: srv-api
         group: destinations
@@ -53,40 +51,132 @@ modules:
           name: srv-api
           url: ~{srv-url}
           forwardAuthToken: true
+    build-parameters:
+      requires:
+        - name: dashboard
+          artifacts:
+            - '*'
+          target-path: webapp/dashboard
+        - name: employees
+          artifacts:
+            - '*'
+          target-path: webapp/employees
+        - name: departments
+          artifacts:
+            - '*'
+          target-path: webapp/departments
+        - name: documents
+          artifacts:
+            - '*'
+          target-path: webapp/documents
+        - name: assets
+          artifacts:
+            - '*'
+          target-path: webapp/assets
+        - name: trainings
+          artifacts:
+            - '*'
+          target-path: webapp/trainings
+        - name: reports
+          artifacts:
+            - '*'
+          target-path: webapp/reports
+        - name: onboarding-tasks
+          artifacts:
+            - '*'
+          target-path: webapp/onboarding-tasks
 
-  # ✅ Build UI apps (NO npm install here)
-  - name: html5-apps
-    type: html5
-    path: app
+  # ✅ UI APPS
+  - name: dashboard
+    type: custom
+    path: app/dashboard
     build-parameters:
       builder: custom
       commands:
-        - npx ui5 build --all --config dashboard/ui5.yaml
-        - npx ui5 build --all --config employees/ui5.yaml
-        - npx ui5 build --all --config departments/ui5.yaml
-        - npx ui5 build --all --config documents/ui5.yaml
-        - npx ui5 build --all --config assets/ui5.yaml
-        - npx ui5 build --all --config trainings/ui5.yaml
-        - npx ui5 build --all --config reports/ui5.yaml
-        - npx ui5 build --all --config onboarding-tasks/ui5.yaml
-      build-result: resources
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
 
-  # ✅ Deploy UI apps to HTML5 repo
-  - name: html5-content
-    type: com.sap.application.content
-    path: app
-    requires:
-      - name: employee-onboarding-html5-host
+  - name: employees
+    type: custom
+    path: app/employees
     build-parameters:
-      build-result: resources
-      requires:
-        - name: html5-apps
-          artifacts:
-            - resources/**
-          target-path: resources/
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
 
+  - name: departments
+    type: custom
+    path: app/departments
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+  - name: documents
+    type: custom
+    path: app/documents
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+  - name: assets
+    type: custom
+    path: app/assets
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+  - name: trainings
+    type: custom
+    path: app/trainings
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+  - name: reports
+    type: custom
+    path: app/reports
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+  - name: onboarding-tasks
+    type: custom
+    path: app/onboarding-tasks
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+# ✅ SERVICES
 resources:
-
   - name: employee-onboarding-db
     type: com.sap.xs.hdi-container
     parameters:
@@ -98,19 +188,7 @@ resources:
     parameters:
       service: xsuaa
       service-plan: application
-      path: xs-security.json
-
-  - name: employee-onboarding-html5-host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-
-  - name: employee-onboarding-html5-runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
+      path: ./xs-security.json
 
   - name: employee-onboarding-destination
     type: org.cloudfoundry.managed-service

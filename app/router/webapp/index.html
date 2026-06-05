@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Onboarding Platform</title>
+    <script>
+        // Master list of all available apps
+        const allApps = {
+            "dashboard": { title: "Dashboard", description: "Analytics Overview", icon: "sap-icon://barchart", applicationType: "URL", url: "/dashboard", additionalInformation: "SAPUI5.Component=dashboard" },
+            "employees": { title: "Employees", description: "Manage Profiles", icon: "sap-icon://employee", applicationType: "URL", url: "/employees", additionalInformation: "SAPUI5.Component=employees" },
+            "departments": { title: "Departments", description: "Manage Departments", icon: "sap-icon://corporate", applicationType: "URL", url: "/departments", additionalInformation: "SAPUI5.Component=departments" },
+            "tasks": { title: "Onboarding Tasks", description: "Onboarding Tasks", icon: "sap-icon://task", applicationType: "URL", url: "/onboarding-tasks", additionalInformation: "SAPUI5.Component=onboardingtasks" },
+            "documents": { title: "Documents", description: "Employee Documents", icon: "sap-icon://document", applicationType: "URL", url: "/documents", additionalInformation: "SAPUI5.Component=documents" },
+            "assets": { title: "Assets", description: "Equipment & Assets", icon: "sap-icon://laptop", applicationType: "URL", url: "/assets", additionalInformation: "SAPUI5.Component=assets" },
+            "trainings": { title: "Trainings", description: "Training Modules", icon: "sap-icon://education", applicationType: "URL", url: "/trainings", additionalInformation: "SAPUI5.Component=trainings" },
+            "reports": { title: "Reports", description: "System Reports", icon: "sap-icon://pie-chart", applicationType: "URL", url: "/reports", additionalInformation: "SAPUI5.Component=reports" }
+        };
+
+        // Fetch directly from the CAP backend API to securely read XSUAA JWT and computed roles
+        fetch('/api/me')
+            .then(response => {
+                if (!response.ok) throw new Error("Backend API not available");
+                return response.json();
+            })
+            .then(userData => {
+                const allowedApplications = {};
+                
+                if (userData.apps && Array.isArray(userData.apps)) {
+                    userData.apps.forEach(appKey => {
+                        if (allApps[appKey]) {
+                            // Assign the proper intent key mapping (e.g. Dashboard-display)
+                            const intent = (appKey === "dashboard" || appKey === "reports") 
+                                ? appKey.charAt(0).toUpperCase() + appKey.slice(1) + "-display"
+                                : appKey.charAt(0).toUpperCase() + appKey.slice(1) + "-manage";
+                            
+                            allowedApplications[intent] = allApps[appKey];
+                        }
+                    });
+                }
+
+                // Configure FLP Sandbox completely dynamically
+                window["sap-ushell-config"] = {
+                    defaultRenderer: "fiori2",
+                    renderers: {
+                        fiori2: {
+                            componentData: {
+                                config: {
+                                    enableSearch: false,
+                                    rootIntent: "Shell-home"
+                                }
+                            }
+                        }
+                    },
+                    applications: allowedApplications,
+                    services: {
+                        Container: {
+                            adapter: {
+                                config: {
+                                    id: userData.id || "User",
+                                    firstName: userData.displayName || "User",
+                                    lastName: "",
+                                    fullName: userData.displayName || "User",
+                                    logoutUrl: "/do/logout"
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // Dynamically load the sandbox and UI5 core now that config is ready
+                const sandboxScript = document.createElement("script");
+                sandboxScript.src = "https://ui5.sap.com/test-resources/sap/ushell/bootstrap/sandbox.js";
+                sandboxScript.onload = () => {
+                    const ui5Script = document.createElement("script");
+                    ui5Script.id = "sap-ui-bootstrap";
+                    ui5Script.src = "https://ui5.sap.com/resources/sap-ui-core.js";
+                    ui5Script.setAttribute("data-sap-ui-theme", "sap_horizon");
+                    ui5Script.setAttribute("data-sap-ui-libs", "sap.m, sap.ushell, sap.ui.core, sap.ui.layout");
+                    ui5Script.setAttribute("data-sap-ui-compatVersion", "edge");
+                    ui5Script.setAttribute("data-sap-ui-async", "true");
+                    ui5Script.onload = () => {
+                        sap.ui.getCore().attachInit(() => {
+                            // Use the modern asynchronous renderer to avoid deprecation warnings
+                            sap.ushell.Container.createRenderer("fiori2", true).then(renderer => {
+                                renderer.placeAt("content");
+                            });
+
+                            // Override sandbox default logout behavior to force a real session termination
+                            sap.ushell.Container.logout = function() {
+                                window.location.replace("/do/logout");
+                            };
+                        });
+                    };
+                    document.head.appendChild(ui5Script);
+                };
+                document.head.appendChild(sandboxScript);
+            })
+            .catch(err => {
+                console.error("Failed to load user profile", err);
+                document.body.innerHTML = "<div style='padding:2rem;font-family:sans-serif;'>Failed to authenticate and load applications.</div>";
+            });
+    </script>
+</head>
+<body class="sapUiBody" id="content">
+</body>
+</html>

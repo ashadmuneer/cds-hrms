@@ -1,0 +1,191 @@
+{
+	"_version": "2.0.0",
+	"sap.app": {
+		"id": "dashboard",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				""
+			]
+		},
+		"applicationVersion": {
+			"version": "0.0.1"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"sourceTemplate": {
+			"id": "@sap/generator-fiori:alp",
+			"version": "1.24.0",
+			"toolsId": "07d7f0bd-9888-4d0d-8309-d7733ddc4b31"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/odata/v4/onboarding/",
+				"type": "OData",
+				"settings": {
+					"annotations": [],
+					"odataVersion": "4.0"
+				}
+			}
+		},
+		"crossNavigation": {
+			"inbounds": {
+				"Dashboard-display": {
+					"semanticObject": "Dashboard",
+					"action": "display",
+					"title": "{{appTitle}}",
+					"signature": {
+						"parameters": {},
+						"additionalParameters": "allowed"
+					}
+				}
+			},
+			"outbounds": {
+				"toEmployees": {
+					"semanticObject": "Employees",
+					"action": "manage"
+				},
+				"toDepartments": {
+					"semanticObject": "Departments",
+					"action": "manage"
+				},
+				"toOnboardingTasks": {
+					"semanticObject": "OnboardingTasks",
+					"action": "manage"
+				},
+				"toDocuments": {
+					"semanticObject": "Documents",
+					"action": "manage"
+				},
+				"toAssets": {
+					"semanticObject": "Assets",
+					"action": "manage"
+				},
+				"toTrainings": {
+					"semanticObject": "Trainings",
+					"action": "manage"
+				},
+				"toReports": {
+					"semanticObject": "Reports",
+					"action": "display"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": true,
+		"dependencies": {
+			"minUI5Version": "1.136.7",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.ui.layout": {},
+				"sap.fe.templates": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "dashboard.i18n.i18n",
+					"supportedLocales": [
+						""
+					]
+				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			},
+			"@i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"uri": "i18n/i18n.properties",
+				"settings": {
+					"supportedLocales": [
+						""
+					]
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/dashboard.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {},
+			"routes": [
+				{
+					"pattern": ":?query:",
+					"name": "DashboardList",
+					"target": "DashboardList"
+				}
+			],
+			"targets": {
+				"DashboardList": {
+					"type": "Component",
+					"id": "DashboardList",
+					"name": "sap.fe.templates.ListReport",
+					"options": {
+						"settings": {
+							"contextPath": "/EmployeeOverview",
+							"variantManagement": "Page",
+							"initialLoad": true,
+							"controlConfiguration": {
+								"@com.sap.vocabularies.UI.v1.LineItem": {
+									"tableSettings": {
+										"type": "ResponsiveTable"
+									}
+								},
+								"@com.sap.vocabularies.UI.v1.Chart": {
+									"chartSettings": {
+										"personalization": true
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"flexBundle": false
+	},
+	"sap.fiori": {
+		"registrationIds": [],
+		"archeType": "analytical"
+	},
+	"sap.fe": {
+		"app": {
+			"enableLazyLoading": true
+		}
+	}
+}

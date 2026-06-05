@@ -1,4 +1,4 @@
 ID;taskName;description;employee_ID;assignedTo;dueDate;priority;status
-bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1;Complete employment forms;Submit required employment and tax forms;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa2;hr.admin;2026-06-20;High;InProgress
-bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb2;Prepare laptop;Configure and allocate company laptop;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa2;it.admin;2026-06-12;High;Pending
-bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb3;Security orientation;Complete information security orientation;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa3;it.admin;2026-06-10;Medium;Completed
+dddddddd-dddd-dddd-dddd-ddddddddddd1;Setup IT Equipment;Provide laptop and monitors;cccccccc-cccc-cccc-cccc-cccccccccccc;it.admin@company.com;2026-06-12;High;Open
+dddddddd-dddd-dddd-dddd-ddddddddddd2;Sign Code of Conduct;Read and sign the company code of conduct;cccccccc-cccc-cccc-cccc-cccccccccccc;emily.chen@company.com;2026-06-11;High;Completed
+dddddddd-dddd-dddd-dddd-ddddddddddd3;Security Training;Complete mandatory cybersecurity training;cccccccc-cccc-cccc-cccc-cccccccccccc;emily.chen@company.com;2026-06-15;Medium;Open

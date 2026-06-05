@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/JourneyRunner","reports/test/integration/pages/EmployeeOverviewList","reports/test/integration/pages/EmployeeOverviewObjectPage"],function(e,t,r){"use strict";var s=new e({launchUrl:sap.ui.require.toUrl("reports")+"/test/flpSandbox.html#reports-tile",pages:{onTheEmployeeOverviewList:t,onTheEmployeeOverviewObjectPage:r},async:true});return s});
+//# sourceMappingURL=JourneyRunner.js.map

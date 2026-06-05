@@ -1,0 +1,178 @@
+{
+	"_version": "2.0.0",
+	"sap.app": {
+		"id": "onboardingtasks",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				""
+			]
+		},
+		"applicationVersion": {
+			"version": "0.0.1"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"sourceTemplate": {
+			"id": "@sap/generator-fiori:lrop",
+			"version": "1.24.0",
+			"toolsId": "ea7dc77a-24ed-4aba-850b-96a1870fcc14"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/odata/v4/onboarding/",
+				"type": "OData",
+				"settings": {
+					"annotations": [],
+					"odataVersion": "4.0"
+				}
+			}
+		},
+		"crossNavigation": {
+			"inbounds": {
+				"OnboardingTasks-manage": {
+					"semanticObject": "OnboardingTasks",
+					"action": "manage",
+					"title": "{{appTitle}}",
+					"signature": {
+						"parameters": {}
+					},
+					"resolutionResult": {
+						"applicationType": "SAPUI5",
+						"additionalInformation": "SAPUI5.Component=onboardingtasks",
+						"url": ""
+					}
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": true,
+		"dependencies": {
+			"minUI5Version": "1.136.7",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.fe.templates": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "onboardingtasks.i18n.i18n",
+					"supportedLocales": [
+						""
+					]
+				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			},
+			"@i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"uri": "i18n/i18n.properties",
+				"settings": {
+					"supportedLocales": [
+						""
+					]
+				}
+			}
+		},
+		"resources": {
+			"css": []
+		},
+		"routing": {
+			"config": {},
+			"routes": [
+				{
+					"pattern": ":?query:",
+					"name": "OnboardingTasksList",
+					"target": "OnboardingTasksList"
+				},
+				{
+					"pattern": "OnboardingTasks({key}):?query:",
+					"name": "OnboardingTasksObjectPage",
+					"target": "OnboardingTasksObjectPage"
+				}
+			],
+			"targets": {
+				"OnboardingTasksList": {
+					"type": "Component",
+					"id": "OnboardingTasksList",
+					"name": "sap.fe.templates.ListReport",
+					"options": {
+						"settings": {
+							"contextPath": "/OnboardingTasks",
+							"variantManagement": "Page",
+							"navigation": {
+								"OnboardingTasks": {
+									"detail": {
+										"route": "OnboardingTasksObjectPage"
+									}
+								}
+							},
+							"controlConfiguration": {
+								"@com.sap.vocabularies.UI.v1.LineItem": {
+									"tableSettings": {
+										"type": "ResponsiveTable"
+									}
+								}
+							}
+						}
+					}
+				},
+				"OnboardingTasksObjectPage": {
+					"type": "Component",
+					"id": "OnboardingTasksObjectPage",
+					"name": "sap.fe.templates.ObjectPage",
+					"options": {
+						"settings": {
+							"editableHeaderContent": false,
+							"contextPath": "/OnboardingTasks",
+							"showBreadcrumbs": true
+						}
+					}
+				}
+			}
+		},
+		"flexBundle": false
+	},
+	"sap.fiori": {
+		"registrationIds": [],
+		"archeType": "transactional"
+	},
+	"sap.fe": {
+		"app": {
+			"enableLazyLoading": true
+		}
+	}
+}

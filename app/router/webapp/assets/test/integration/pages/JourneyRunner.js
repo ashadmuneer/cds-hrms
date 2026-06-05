@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/JourneyRunner","assets/test/integration/pages/AssetsList","assets/test/integration/pages/AssetsObjectPage"],function(s,e,t){"use strict";var a=new s({launchUrl:sap.ui.require.toUrl("assets")+"/test/flpSandbox.html#assets-tile",pages:{onTheAssetsList:e,onTheAssetsObjectPage:t},async:true});return a});
+//# sourceMappingURL=JourneyRunner.js.map
