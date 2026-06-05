@@ -1,0 +1,69 @@
+_schema-version: "3.1"
+ID: employee-onboarding-platform
+version: 1.0.0
+description: Employee onboarding platform with CAP, Fiori, AppRouter, and XSUAA
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+
+modules:
+  - name: employee-onboarding-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: employee-onboarding-db
+      - name: employee-onboarding-auth
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+
+  - name: employee-onboarding-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: employee-onboarding-db
+
+  - name: employee-onboarding-router
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: employee-onboarding-auth
+
+resources:
+  - name: employee-onboarding-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  - name: employee-onboarding-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: employee-onboarding-platform-${org}-${space}
+        tenant-mode: dedicated

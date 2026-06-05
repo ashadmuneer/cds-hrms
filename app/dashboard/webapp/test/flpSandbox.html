@@ -22,93 +22,12 @@
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type="text/javascript">
-        window["sap-ushell-config"] = {
-            defaultRenderer: "fiori2",
-            bootstrapPlugins: {
-                "RuntimeAuthoringPlugin": {
-                    component: "sap.ushell.plugins.rta",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: "hidden",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications: {
-                "dashboard-tile": {
-                    title: "Onboarding Dashboard",
-                    description: "Analytical overview of employee onboarding progress",
-                    additionalInformation: "SAPUI5.Component=dashboard",
-                    applicationType: "URL",
-                    url: "../"
-                },
-                "Employees-manage": {
-                    title: "Employees",
-                    description: "Manage employees",
-                    additionalInformation: "SAPUI5.Component=employees",
-                    applicationType: "URL",
-                    url: "../../employees/"
-                },
-                "Departments-manage": {
-                    title: "Departments",
-                    description: "Manage departments",
-                    additionalInformation: "SAPUI5.Component=departments",
-                    applicationType: "URL",
-                    url: "../../departments/"
-                },
-                "OnboardingTasks-manage": {
-                    title: "Onboarding Tasks",
-                    description: "Manage onboarding tasks",
-                    additionalInformation: "SAPUI5.Component=onboardingtasks",
-                    applicationType: "URL",
-                    url: "../../onboardingtasks/"
-                },
-                "Documents-manage": {
-                    title: "Documents",
-                    description: "Manage documents",
-                    additionalInformation: "SAPUI5.Component=documents",
-                    applicationType: "URL",
-                    url: "../../documents/"
-                },
-                "Assets-manage": {
-                    title: "Assets",
-                    description: "Manage assets",
-                    additionalInformation: "SAPUI5.Component=assets",
-                    applicationType: "URL",
-                    url: "../../assets/"
-                },
-                "Trainings-manage": {
-                    title: "Training",
-                    description: "Manage training",
-                    additionalInformation: "SAPUI5.Component=trainings",
-                    applicationType: "URL",
-                    url: "../../trainings/"
-                },
-                "Reports-display": {
-                    title: "Reports",
-                    description: "Display onboarding reports",
-                    additionalInformation: "SAPUI5.Component=reports",
-                    applicationType: "URL",
-                    url: "../../reports/"
-                }
-            }
-        };
-    </script>
-
     <script src="https://sapui5.hana.ondemand.com/1.136.7/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="https://sapui5.hana.ondemand.com/1.136.7/resources/sap-ui-core.js"
         data-sap-ui-libs=""
+        data-sap-ui-on-init="module:dashboard/test/flpSandbox"
         data-sap-ui-async="true"
         data-sap-ui-preload="async"
         data-sap-ui-theme="sap_horizon"
@@ -117,11 +36,6 @@
         data-sap-ui-resource-roots='{"dashboard": "../"}'
         data-sap-ui-frame-options="allow"
         data-sap-ui-flexibility-services='[{"connector": "LocalStorageConnector"}]'>
-    </script>
-    <script>
-        sap.ui.getCore().attachInit(function () {
-            sap.ushell.Container.createRenderer().placeAt("content");
-        });
     </script>
 </head>
 

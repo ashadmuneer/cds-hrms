@@ -4,39 +4,54 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
     "sap/ui/core/Popup",
+    "sap/ushell/Container",
   ],
-  function (Controller, JSONModel, MessageToast, Popup) {
+  function (Controller, JSONModel, MessageToast, Popup, ShellContainer) {
     "use strict";
 
     const APP_TARGETS = {
       employees: {
         semanticObject: "Employees",
         action: "manage",
+        url: "../employees/",
       },
       departments: {
         semanticObject: "Departments",
         action: "manage",
+        url: "../departments/",
       },
       tasks: {
         semanticObject: "OnboardingTasks",
         action: "manage",
+        url: "../onboarding-tasks/",
       },
       documents: {
         semanticObject: "Documents",
         action: "manage",
+        url: "../documents/",
       },
       assets: {
         semanticObject: "Assets",
         action: "manage",
+        url: "../assets/",
       },
       trainings: {
         semanticObject: "Trainings",
         action: "manage",
+        url: "../trainings/",
       },
       reports: {
         semanticObject: "Reports",
         action: "display",
+        url: "../reports/",
       },
+    };
+
+    const ROLE_TO_APPS = {
+      HRAdmin: ["employees", "departments", "tasks", "documents", "assets", "trainings", "reports"],
+      HRManager: ["employees", "departments", "tasks", "documents", "trainings", "reports"],
+      ITAdmin: ["tasks", "assets", "reports"],
+      Employee: ["tasks", "documents", "trainings", "reports"],
     };
 
     const PRIORITY_WEIGHT = {
@@ -52,6 +67,7 @@ sap.ui.define(
           new JSONModel(this._emptyDashboard()),
           "dashboard",
         );
+        this._loadSession();
         this._loadDashboard();
       },
 
@@ -66,6 +82,13 @@ sap.ui.define(
         if (!mTarget) {
           this._showToast(
             this.getResourceBundle().getText("navigationTargetMissing"),
+          );
+          return;
+        }
+
+        if (!this._isTargetAllowed(sTarget)) {
+          this._showToast(
+            this.getResourceBundle().getText("navigationNotAllowed"),
           );
           return;
         }
@@ -97,22 +120,44 @@ sap.ui.define(
       },
 
       _getCrossApplicationNavigation: function () {
-        const oContainer =
-          window.sap && window.sap.ushell && window.sap.ushell.Container;
-
-        if (!oContainer) {
+        if (!ShellContainer) {
           return Promise.reject(
             new Error("SAP Fiori launchpad shell is not available"),
           );
         }
 
-        if (oContainer.getServiceAsync) {
-          return oContainer.getServiceAsync("CrossApplicationNavigation");
+        if (ShellContainer.getServiceAsync) {
+          return ShellContainer.getServiceAsync("CrossApplicationNavigation");
         }
 
-        return Promise.resolve(
-          oContainer.getService("CrossApplicationNavigation"),
+        return Promise.reject(
+          new Error("SAP Fiori launchpad shell does not support async navigation"),
         );
+      },
+
+      _loadSession: function () {
+        fetch("/api/me")
+          .then(function (oResponse) {
+            if (!oResponse.ok) {
+              throw new Error("Failed to resolve session");
+            }
+
+            return oResponse.json();
+          })
+          .then(
+            function (oUser) {
+              this.getView()
+                .getModel("dashboard")
+                .setProperty("/session", this._normalizeSession(oUser));
+            }.bind(this),
+          )
+          .catch(
+            function () {
+              this.getView()
+                .getModel("dashboard")
+                .setProperty("/session", this._emptySession());
+            }.bind(this),
+          );
       },
 
       _loadDashboard: function (bShowToast) {
@@ -139,6 +184,9 @@ sap.ui.define(
                 trainings: aResults[5],
               });
 
+              oData.session =
+                oDashboardModel.getProperty("/session") ||
+                this._emptySession();
               oDashboardModel.setData(oData);
 
               if (bShowToast) {
@@ -158,6 +206,76 @@ sap.ui.define(
           .finally(function () {
             oDashboardModel.setProperty("/busy", false);
           });
+      },
+
+      _normalizeSession: function (oUser) {
+        const aRoles = Array.isArray(oUser && oUser.roles)
+          ? oUser.roles.filter(function (sRole) {
+              return Boolean(ROLE_TO_APPS[sRole]);
+            })
+          : [];
+        const mAccess = this._resolveAccess(aRoles);
+        const aRoleLabels = aRoles.map(
+          function (sRole) {
+            return this.getResourceBundle().getText(sRole);
+          }.bind(this),
+        );
+        const aAllowedApps = Object.keys(mAccess)
+          .filter(function (sTarget) {
+            return mAccess[sTarget];
+          })
+          .map(
+            function (sTarget) {
+              return this.getResourceBundle().getText(sTarget);
+            }.bind(this),
+          );
+        const sDisplayName =
+          (oUser && oUser.displayName) || (oUser && oUser.id) || "User";
+
+        return {
+          loading: false,
+          userId: (oUser && oUser.id) || "",
+          displayName: sDisplayName,
+          userText: this.getResourceBundle().getText("signedInAs", [
+            sDisplayName,
+          ]),
+          roleText: this.getResourceBundle().getText("roleSummary", [
+            aRoleLabels.length ? aRoleLabels.join(", ") : "-",
+          ]),
+          accessText: this.getResourceBundle().getText("accessSummary", [
+            aAllowedApps.length ? aAllowedApps.join(", ") : "-",
+          ]),
+          roles: aRoles,
+          access: mAccess,
+        };
+      },
+
+      _resolveAccess: function (aRoles) {
+        const mAccess = {
+          employees: false,
+          departments: false,
+          tasks: false,
+          documents: false,
+          assets: false,
+          trainings: false,
+          reports: true,
+        };
+
+        aRoles.forEach(function (sRole) {
+          (ROLE_TO_APPS[sRole] || []).forEach(function (sTarget) {
+            mAccess[sTarget] = true;
+          });
+        });
+
+        return mAccess;
+      },
+
+      _isTargetAllowed: function (sTarget) {
+        const oSession =
+          this.getView().getModel("dashboard").getProperty("/session") || {};
+        const mAccess = oSession.access || {};
+
+        return mAccess[sTarget] !== false;
       },
 
       _readEntity: function (sPath) {
@@ -586,6 +704,7 @@ sap.ui.define(
         return {
           busy: false,
           lastUpdatedText: "",
+          session: this._emptySession(),
           kpis: {
             totalEmployees: this._kpi(0),
             avgProgress: this._percentKpi(0),
@@ -606,6 +725,27 @@ sap.ui.define(
           assetDistribution: [],
           priorityTasks: [],
           documentQueue: [],
+        };
+      },
+
+      _emptySession: function () {
+        return {
+          loading: true,
+          userId: "",
+          displayName: "",
+          userText: this.getResourceBundle().getText("sessionLoading"),
+          roleText: "",
+          accessText: "",
+          roles: [],
+          access: {
+            employees: false,
+            departments: false,
+            tasks: false,
+            documents: false,
+            assets: false,
+            trainings: false,
+            reports: true,
+          },
         };
       },
 

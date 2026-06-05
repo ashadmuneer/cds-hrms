@@ -16,11 +16,20 @@
                         text="{dashboard>/lastUpdatedText}"
                         icon="sap-icon://synchronize"
                         state="Information"/>
+                    <ObjectStatus
+                        text="{dashboard>/session/userText}"
+                        icon="sap-icon://person-placeholder"
+                        state="None"/>
+                    <ObjectStatus
+                        text="{dashboard>/session/roleText}"
+                        icon="sap-icon://key-user-settings"
+                        state="Information"/>
                     <Button
                         text="{i18n>employees}"
                         icon="sap-icon://employee"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/employees}">
                         <customData>
                             <core:CustomData key="target" value="employees"/>
                         </customData>
@@ -29,7 +38,8 @@
                         text="{i18n>departments}"
                         icon="sap-icon://org-chart"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/departments}">
                         <customData>
                             <core:CustomData key="target" value="departments"/>
                         </customData>
@@ -38,7 +48,8 @@
                         text="{i18n>tasks}"
                         icon="sap-icon://task"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/tasks}">
                         <customData>
                             <core:CustomData key="target" value="tasks"/>
                         </customData>
@@ -47,7 +58,8 @@
                         text="{i18n>documents}"
                         icon="sap-icon://documents"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/documents}">
                         <customData>
                             <core:CustomData key="target" value="documents"/>
                         </customData>
@@ -56,7 +68,8 @@
                         text="{i18n>assets}"
                         icon="sap-icon://laptop"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/assets}">
                         <customData>
                             <core:CustomData key="target" value="assets"/>
                         </customData>
@@ -65,7 +78,8 @@
                         text="{i18n>training}"
                         icon="sap-icon://learning-assistant"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/trainings}">
                         <customData>
                             <core:CustomData key="target" value="trainings"/>
                         </customData>
@@ -74,7 +88,8 @@
                         text="{i18n>reports}"
                         icon="sap-icon://business-objects-experience"
                         type="Transparent"
-                        press=".onNavigate">
+                        press=".onNavigate"
+                        visible="{dashboard>/session/access/reports}">
                         <customData>
                             <core:CustomData key="target" value="reports"/>
                         </customData>
@@ -126,7 +141,7 @@
                                             renderType="Bare"
                                             wrap="Wrap"
                                             alignItems="Stretch">
-                                            <GenericTile header="{i18n>employees}" subheader="{i18n>employeesSub}" class="kpiTile navTile" press=".onNavigate">
+                                            <GenericTile header="{i18n>employees}" subheader="{i18n>employeesSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/employees}">
                                                 <customData>
                                                     <core:CustomData key="target" value="employees"/>
                                                 </customData>
@@ -149,7 +164,7 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>pendingTasks}" subheader="{i18n>pendingTasksSub}" class="kpiTile navTile" press=".onNavigate">
+                                            <GenericTile header="{i18n>pendingTasks}" subheader="{i18n>pendingTasksSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/tasks}">
                                                 <customData>
                                                     <core:CustomData key="target" value="tasks"/>
                                                 </customData>
@@ -162,7 +177,7 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>documents}" subheader="{i18n>documentsSub}" class="kpiTile navTile" press=".onNavigate">
+                                            <GenericTile header="{i18n>documents}" subheader="{i18n>documentsSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/documents}">
                                                 <customData>
                                                     <core:CustomData key="target" value="documents"/>
                                                 </customData>
@@ -175,7 +190,7 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>assets}" subheader="{i18n>assetsSub}" class="kpiTile navTile" press=".onNavigate">
+                                            <GenericTile header="{i18n>assets}" subheader="{i18n>assetsSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/assets}">
                                                 <customData>
                                                     <core:CustomData key="target" value="assets"/>
                                                 </customData>
@@ -188,7 +203,7 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>training}" subheader="{i18n>trainingSub}" class="kpiTile navTile" press=".onNavigate">
+                                            <GenericTile header="{i18n>training}" subheader="{i18n>trainingSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/trainings}">
                                                 <customData>
                                                     <core:CustomData key="target" value="trainings"/>
                                                 </customData>

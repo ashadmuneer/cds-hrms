@@ -1,0 +1,89 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SAP/cloud-security-xsuaa-integration/master/xs-security-schema.json",
+  "xsappname": "employee-onboarding-platform",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.HRAdmin",
+      "description": "Full administrative access to onboarding operations"
+    },
+    {
+      "name": "$XSAPPNAME.HRManager",
+      "description": "HR management access to onboarding operations"
+    },
+    {
+      "name": "$XSAPPNAME.ITAdmin",
+      "description": "IT administration access to onboarding operations"
+    },
+    {
+      "name": "$XSAPPNAME.Employee",
+      "description": "Employee self-service access"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "HRAdmin",
+      "description": "HR administrator",
+      "scope-references": [
+        "$XSAPPNAME.HRAdmin"
+      ]
+    },
+    {
+      "name": "HRManager",
+      "description": "HR manager",
+      "scope-references": [
+        "$XSAPPNAME.HRManager"
+      ]
+    },
+    {
+      "name": "ITAdmin",
+      "description": "IT administrator",
+      "scope-references": [
+        "$XSAPPNAME.ITAdmin"
+      ]
+    },
+    {
+      "name": "Employee",
+      "description": "Employee user",
+      "scope-references": [
+        "$XSAPPNAME.Employee"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "Onboarding HR Admin",
+      "description": "Full access for HR administrators",
+      "role-template-references": [
+        "$XSAPPNAME.HRAdmin"
+      ]
+    },
+    {
+      "name": "Onboarding HR Manager",
+      "description": "Access for HR managers",
+      "role-template-references": [
+        "$XSAPPNAME.HRManager"
+      ]
+    },
+    {
+      "name": "Onboarding IT Admin",
+      "description": "Access for IT administrators",
+      "role-template-references": [
+        "$XSAPPNAME.ITAdmin"
+      ]
+    },
+    {
+      "name": "Onboarding Employee",
+      "description": "Access for employees",
+      "role-template-references": [
+        "$XSAPPNAME.Employee"
+      ]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "http://localhost:*/**",
+      "https://*.cfapps.*.hana.ondemand.com/**"
+    ]
+  }
+}

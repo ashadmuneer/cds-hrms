@@ -32,50 +32,39 @@
           "action": "display",
           "title": "{{appTitle}}",
           "signature": {
-            "parameters": {}
-          },
-          "resolutionResult": {
-            "applicationType": "SAPUI5",
-            "additionalInformation": "SAPUI5.Component=dashboard",
-            "url": ""
+            "parameters": {},
+            "additionalParameters": "allowed"
           }
         }
       },
       "outbounds": {
         "toEmployees": {
           "semanticObject": "Employees",
-          "action": "manage",
-          "title": "{{employees}}"
+          "action": "manage"
         },
         "toDepartments": {
           "semanticObject": "Departments",
-          "action": "manage",
-          "title": "{{departments}}"
+          "action": "manage"
         },
         "toOnboardingTasks": {
           "semanticObject": "OnboardingTasks",
-          "action": "manage",
-          "title": "{{tasks}}"
+          "action": "manage"
         },
         "toDocuments": {
           "semanticObject": "Documents",
-          "action": "manage",
-          "title": "{{documents}}"
+          "action": "manage"
         },
         "toAssets": {
           "semanticObject": "Assets",
-          "action": "manage",
-          "title": "{{assets}}"
+          "action": "manage"
         },
         "toTrainings": {
           "semanticObject": "Trainings",
-          "action": "manage",
-          "title": "{{training}}"
+          "action": "manage"
         },
         "toReports": {
           "semanticObject": "Reports",
-          "action": "display",
-          "title": "{{reports}}"
+          "action": "display"
         }
       }
     }
@@ -125,10 +114,6 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
-      },
-      "@i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "uri": "i18n/i18n.properties"
       }
     },
     "resources": {

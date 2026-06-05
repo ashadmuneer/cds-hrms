@@ -18,8 +18,10 @@
     "watch-reports": "cds watch --open reports/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "dependencies": {
+    "@cap-js/hana": "^2.8.0",
     "@cap-js/sqlite": "^2",
     "@sap/cds": "^9",
+    "@sap/xssec": "^4.8.0",
     "express": "^5"
   },
   "devDependencies": {
@@ -38,40 +40,59 @@
     },
     "requires": {
       "db": {
-        "kind": "sqlite",
-        "credentials": {
-          "url": "db/onboarding.db"
+        "[development]": {
+          "kind": "sqlite",
+          "credentials": {
+            "url": "db/onboarding.db"
+          }
+        },
+        "[production]": {
+          "kind": "hana"
         }
       },
-      "auth": {
-        "kind": "mocked",
-        "users": {
-          "hr.admin": {
-            "roles": [
-              "HRAdmin"
-            ]
-          },
-          "hr.manager": {
-            "roles": [
-              "HRManager"
-            ]
-          },
-          "it.admin": {
-            "roles": [
-              "ITAdmin"
-            ]
-          },
-          "employee": {
-            "roles": [
-              "Employee"
-            ]
+      "[development]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "hr.admin": {
+              "roles": [
+                "HRAdmin"
+              ]
+            },
+            "hr.manager": {
+              "roles": [
+                "HRManager"
+              ]
+            },
+            "it.admin": {
+              "roles": [
+                "ITAdmin"
+              ]
+            },
+            "employee": {
+              "roles": [
+                "Employee"
+              ]
+            }
           }
+        }
+      },
+      "[production]": {
+        "auth": {
+          "kind": "xsuaa"
         }
       }
     }
   },
   "workspaces": [
-    "app/*"
+    "app/assets",
+    "app/dashboard",
+    "app/departments",
+    "app/documents",
+    "app/employees",
+    "app/onboarding-tasks",
+    "app/reports",
+    "app/trainings"
   ],
   "sapux": [
     "app/employees",

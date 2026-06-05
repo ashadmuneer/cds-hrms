@@ -1,0 +1,18 @@
+{
+  "welcomeFile": "/dashboard/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/$",
+      "target": "/dashboard/index.html",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/(.*)$",
+      "target": "/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
