@@ -24,6 +24,23 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "Documents-manage": {
+          "semanticObject": "Documents",
+          "action": "manage",
+          "title": "{{appTitle}}",
+          "signature": {
+            "parameters": {}
+          },
+          "resolutionResult": {
+            "applicationType": "SAPUI5",
+            "additionalInformation": "SAPUI5.Component=documents",
+            "url": ""
+          }
+        }
+      }
     }
   },
   "sap.ui": {

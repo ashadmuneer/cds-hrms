@@ -24,6 +24,23 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "Assets-manage": {
+          "semanticObject": "Assets",
+          "action": "manage",
+          "title": "{{appTitle}}",
+          "signature": {
+            "parameters": {}
+          },
+          "resolutionResult": {
+            "applicationType": "SAPUI5",
+            "additionalInformation": "SAPUI5.Component=assets",
+            "url": ""
+          }
+        }
+      }
     }
   },
   "sap.ui": {

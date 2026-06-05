@@ -1,9 +1,41 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
-], function (Controller, JSONModel, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/ui/core/Popup"
+], function (Controller, JSONModel, MessageToast, Popup) {
     "use strict";
+
+    const APP_TARGETS = {
+        employees: {
+            semanticObject: "Employees",
+            action: "manage"
+        },
+        departments: {
+            semanticObject: "Departments",
+            action: "manage"
+        },
+        tasks: {
+            semanticObject: "OnboardingTasks",
+            action: "manage"
+        },
+        documents: {
+            semanticObject: "Documents",
+            action: "manage"
+        },
+        assets: {
+            semanticObject: "Assets",
+            action: "manage"
+        },
+        trainings: {
+            semanticObject: "Trainings",
+            action: "manage"
+        },
+        reports: {
+            semanticObject: "Reports",
+            action: "display"
+        }
+    };
 
     const PRIORITY_WEIGHT = {
         Critical: 4,
@@ -20,6 +52,45 @@ sap.ui.define([
 
         onRefresh: function () {
             this._loadDashboard(true);
+        },
+
+        onNavigate: function (oEvent) {
+            const sTarget = oEvent.getSource().data("target");
+            const mTarget = APP_TARGETS[sTarget];
+
+            if (!mTarget) {
+                this._showToast(this.getResourceBundle().getText("navigationTargetMissing"));
+                return;
+            }
+
+            this._getCrossApplicationNavigation().then(function (oCrossAppNav) {
+                oCrossAppNav.toExternal({
+                    target: mTarget
+                });
+            }.bind(this)).catch(function () {
+                this._showToast(this.getResourceBundle().getText("standardNavigationUnavailable"));
+            }.bind(this));
+        },
+
+        _showToast: function (sMessage) {
+            MessageToast.show(sMessage, {
+                my: Popup.Dock.CenterBottom,
+                at: Popup.Dock.CenterBottom
+            });
+        },
+
+        _getCrossApplicationNavigation: function () {
+            const oContainer = window.sap && window.sap.ushell && window.sap.ushell.Container;
+
+            if (!oContainer) {
+                return Promise.reject(new Error("SAP Fiori launchpad shell is not available"));
+            }
+
+            if (oContainer.getServiceAsync) {
+                return oContainer.getServiceAsync("CrossApplicationNavigation");
+            }
+
+            return Promise.resolve(oContainer.getService("CrossApplicationNavigation"));
         },
 
         _loadDashboard: function (bShowToast) {
@@ -47,10 +118,10 @@ sap.ui.define([
                 oDashboardModel.setData(oData);
 
                 if (bShowToast) {
-                    MessageToast.show(this.getResourceBundle().getText("dashboardRefreshed"));
+                    this._showToast(this.getResourceBundle().getText("dashboardRefreshed"));
                 }
             }.bind(this)).catch(function () {
-                MessageToast.show(this.getResourceBundle().getText("dashboardLoadError"));
+                this._showToast(this.getResourceBundle().getText("dashboardLoadError"));
             }.bind(this)).finally(function () {
                 oDashboardModel.setProperty("/busy", false);
             });

@@ -17,6 +17,69 @@
                         icon="sap-icon://synchronize"
                         state="Information"/>
                     <Button
+                        text="{i18n>employees}"
+                        icon="sap-icon://employee"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="employees"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>departments}"
+                        icon="sap-icon://org-chart"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="departments"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>tasks}"
+                        icon="sap-icon://task"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="tasks"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>documents}"
+                        icon="sap-icon://documents"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="documents"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>assets}"
+                        icon="sap-icon://laptop"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="assets"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>training}"
+                        icon="sap-icon://learning-assistant"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="trainings"/>
+                        </customData>
+                    </Button>
+                    <Button
+                        text="{i18n>reports}"
+                        icon="sap-icon://business-objects-experience"
+                        type="Transparent"
+                        press=".onNavigate">
+                        <customData>
+                            <core:CustomData key="target" value="reports"/>
+                        </customData>
+                    </Button>
+                    <Button
                         icon="sap-icon://refresh"
                         type="Transparent"
                         tooltip="{i18n>refresh}"
@@ -63,7 +126,10 @@
                                             renderType="Bare"
                                             wrap="Wrap"
                                             alignItems="Stretch">
-                                            <GenericTile header="{i18n>employees}" subheader="{i18n>employeesSub}" class="kpiTile">
+                                            <GenericTile header="{i18n>employees}" subheader="{i18n>employeesSub}" class="kpiTile navTile" press=".onNavigate">
+                                                <customData>
+                                                    <core:CustomData key="target" value="employees"/>
+                                                </customData>
                                                 <tileContent>
                                                     <TileContent unit="{i18n>people}">
                                                         <NumericContent
@@ -83,7 +149,10 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>pendingTasks}" subheader="{i18n>pendingTasksSub}" class="kpiTile">
+                                            <GenericTile header="{i18n>pendingTasks}" subheader="{i18n>pendingTasksSub}" class="kpiTile navTile" press=".onNavigate">
+                                                <customData>
+                                                    <core:CustomData key="target" value="tasks"/>
+                                                </customData>
                                                 <tileContent>
                                                     <TileContent unit="{i18n>open}">
                                                         <NumericContent
@@ -93,7 +162,10 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>documents}" subheader="{i18n>documentsSub}" class="kpiTile">
+                                            <GenericTile header="{i18n>documents}" subheader="{i18n>documentsSub}" class="kpiTile navTile" press=".onNavigate">
+                                                <customData>
+                                                    <core:CustomData key="target" value="documents"/>
+                                                </customData>
                                                 <tileContent>
                                                     <TileContent unit="{i18n>open}">
                                                         <NumericContent
@@ -103,7 +175,10 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>assets}" subheader="{i18n>assetsSub}" class="kpiTile">
+                                            <GenericTile header="{i18n>assets}" subheader="{i18n>assetsSub}" class="kpiTile navTile" press=".onNavigate">
+                                                <customData>
+                                                    <core:CustomData key="target" value="assets"/>
+                                                </customData>
                                                 <tileContent>
                                                     <TileContent unit="{i18n>available}">
                                                         <NumericContent
@@ -113,7 +188,10 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>training}" subheader="{i18n>trainingSub}" class="kpiTile">
+                                            <GenericTile header="{i18n>training}" subheader="{i18n>trainingSub}" class="kpiTile navTile" press=".onNavigate">
+                                                <customData>
+                                                    <core:CustomData key="target" value="trainings"/>
+                                                </customData>
                                                 <tileContent>
                                                     <TileContent unit="%">
                                                         <NumericContent
