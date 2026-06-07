@@ -11,8 +11,8 @@ annotate service.Employees with {
   phone @title: 'Phone Number' @Common.QuickInfo: 'Include the country code (e.g., +1 555-0100)';
   dateOfBirth @title: 'Date of Birth' @Common.QuickInfo: 'Select the date of birth (Format: YYYY-MM-DD)';
   gender @title: 'Gender' @Common.QuickInfo: 'Specify the employee''s gender';
-  department_ID @title: 'Department' @Common.QuickInfo: 'Select the department from the dropdown list' @mandatory;
-  manager_ID @title: 'Manager' @Common.QuickInfo: 'Select the assigned manager from the dropdown list';
+  department @title: 'Department' @Common.QuickInfo: 'Select the department from the dropdown list' @mandatory;
+  manager @title: 'Manager' @Common.QuickInfo: 'Select the assigned manager from the dropdown list';
   designation @title: 'Job Title' @Common.QuickInfo: 'Enter the official job title (e.g., Software Engineer)';
   joiningDate @title: 'Joining Date' @Common.QuickInfo: 'Select the official start date' @mandatory;
   employmentType @title: 'Employment Type' @Common.QuickInfo: 'e.g., Full-Time, Part-Time, Contract';
@@ -33,7 +33,7 @@ annotate service.Employees with {
 annotate service.OnboardingTasks with {
   taskName @title: 'Task Name' @Common.QuickInfo: 'Short, descriptive title for the task' @mandatory;
   description @title: 'Task Description' @Common.QuickInfo: 'Detailed instructions for the task';
-  employee_ID @title: 'Employee' @Common.QuickInfo: 'Select the employee this task belongs to' @mandatory;
+  employee @title: 'Employee' @Common.QuickInfo: 'Select the employee this task belongs to' @mandatory;
   assignedTo @title: 'Assigned To' @Common.QuickInfo: 'Email or role responsible for completing the task';
   dueDate @title: 'Due Date' @Common.QuickInfo: 'Deadline for task completion';
   priority @title: 'Priority' @Common.QuickInfo: 'e.g., High, Medium, Low';

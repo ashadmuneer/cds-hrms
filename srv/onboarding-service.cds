@@ -45,7 +45,7 @@ service OnboardingService {
 
   @readonly
   @cds.redirection.target: false
-  entity EmployeeOverview as select from db.Employees {
+  entity EmployeeOverview as select from Employees {
     key ID,
     employeeNumber,
     firstName,
