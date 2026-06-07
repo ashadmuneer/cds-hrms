@@ -74,6 +74,26 @@
               "roles": [
                 "Employee"
               ]
+            },
+            "admin": {
+              "roles": [
+                "HRAdmin"
+              ]
+            },
+            "hr": {
+              "roles": [
+                "HRManager"
+              ]
+            },
+            "it": {
+              "roles": [
+                "ITAdmin"
+              ]
+            },
+            "employee": {
+              "roles": [
+                "Employee"
+              ]
             }
           }
         },

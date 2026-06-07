@@ -81,16 +81,33 @@ cds.on("bootstrap", (app) => {
       }
     }
 
-    // If still no user at all (no auth header, unauthenticated), return a safe default
-    const safeUser = user || {};
-    const roles = collectRoles(safeUser);
+    // Force authentication if no valid user is found
+    if (!user || !user.id || user.id === "anonymous") {
+      res.setHeader('WWW-Authenticate', 'Basic realm="CAP"');
+      return res.status(401).send('Unauthorized');
+    }
+
+    const roles = collectRoles(user);
     const apps = collectApps(roles);
 
     res.json({
-      id: safeUser.id || "",
-      displayName: getDisplayName(safeUser),
+      id: user.id || "",
+      displayName: getDisplayName(user),
       roles,
       apps
     });
+  });
+
+  // Graceful fallback for Fiori Launchpad's production logout redirect
+  app.get("/do/logout", (req, res) => {
+    res.send(`
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'72',Arial,sans-serif;background:#f5f6f7;">
+        <div style="text-align:center;padding:3rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+          <h2 style="color:#0a6ed1;">Signed Out</h2>
+          <p style="color:#556b82;margin:1rem 0 2rem;">You have successfully signed out.</p>
+          <a href="/router/webapp/index.html" style="padding:0.7rem 2rem;background:#0a6ed1;color:white;text-decoration:none;border-radius:8px;font-size:1rem;">Sign In Again</a>
+        </div>
+      </div>
+    `);
   });
 });
