@@ -22,6 +22,13 @@
         fetch('/api/me')
             .then(response => {
                 if (!response.ok) throw new Error("Backend API not available");
+                const contentType = response.headers.get("content-type") || "";
+                if (!contentType.includes("application/json")) {
+                    // After logout, the App Router returns an HTML login page instead of JSON.
+                    // Redirect to the App Router's root so XSUAA can handle re-authentication.
+                    window.location.replace("/");
+                    throw new Error("Session expired — redirecting to login");
+                }
                 return response.json();
             })
             .then(userData => {
@@ -89,7 +96,25 @@
 
                             // Override sandbox default logout behavior to force a real session termination
                             sap.ushell.Container.logout = function() {
-                                window.location.replace("/do/logout");
+                                // Detect if running on BTP App Router (deployed) or dev environment (local/BAS)
+                                const hostname = window.location.hostname;
+                                const isBTPDeployed = !hostname.includes('localhost') 
+                                    && !hostname.includes('127.0.0.1')
+                                    && !hostname.includes('applicationstudio.cloud.sap');
+                                
+                                if (!isBTPDeployed) {
+                                    // For local dev with Basic Auth: clear cached credentials
+                                    // by sending a request with wrong credentials, then show logout page
+                                    const xhr = new XMLHttpRequest();
+                                    xhr.open("GET", "/", true, "___logout___", "___logout___");
+                                    xhr.onloadend = function() {
+                                        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:\'72\',Arial,sans-serif;background:#f5f6f7;"><div style="text-align:center;padding:3rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><h2 style="color:#0a6ed1;">Signed Out Successfully</h2><p style="color:#556b82;margin:1rem 0 2rem;">Your session has been terminated.</p><button onclick="window.location.reload()" style="padding:0.7rem 2rem;background:#0a6ed1;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;">Sign In Again</button></div></div>';
+                                    };
+                                    xhr.send();
+                                } else {
+                                    // For BTP: use the App Router's logout endpoint
+                                    window.location.replace("/do/logout");
+                                }
                             };
                         });
                     };

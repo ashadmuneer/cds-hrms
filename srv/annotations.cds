@@ -40,26 +40,37 @@ annotate service.OnboardingTasks with {
   status @title: 'Status' @Common.QuickInfo: 'e.g., Open, In Progress, Completed';
 };
 
+annotate service.Documents with {
+  documentType @title: 'Document Type' @Common.QuickInfo: 'e.g., Passport, Degree, NDA' @mandatory;
+  fileName @title: 'File Name' @Common.QuickInfo: 'Name of the uploaded file' @mandatory;
+  mediaType @title: 'Media Type' @Core.IsMediaType;
+  fileContent @title: 'Attachment' @Core.MediaType: mediaType @Core.ContentDisposition.Filename: fileName @Core.ContentDisposition.Type: 'inline';
+  uploadedDate @title: 'Uploaded Date' @Common.QuickInfo: 'Date the document was uploaded';
+  status @title: 'Document Status' @Common.QuickInfo: 'e.g., Pending, Uploaded, Verified, Rejected';
+  employee @title: 'Employee' @Common.QuickInfo: 'The employee this document belongs to' @mandatory;
+};
+
+
 // ---------------------------------------------------------------------------
 // UI FACETS AND LIST REPORT ANNOTATIONS
 // ---------------------------------------------------------------------------
 annotate service.Employees with @(
-  UI.HeaderInfo: {
-    TypeName: 'Employee',
-    TypeNamePlural: 'Employees',
-    Title: { Value: employeeNumber },
-    Description: { Value: email }
-  },
-  UI.SelectionFields: [employeeNumber, firstName, lastName, department_ID, joiningDate, status],
+  UI.HeaderInfo: { TypeName: 'Employee', TypeNamePlural: 'Employees', Title: { Value: firstName }, Description: { Value: employeeNumber } },
+  UI.DataPoint#Progress: { Value: onboardingProgress, TargetValue: 100, Visualization: #Progress, Title: 'Onboarding Progress (%)' },
+  UI.SelectionFields: [employeeNumber, department_ID, status],
   UI.LineItem: [
-    { Value: employeeNumber, Label: 'Employee ID' },
-    { Value: firstName, Label: 'First Name' },
-    { Value: lastName, Label: 'Last Name' },
-    { Value: email, Label: 'Email' },
+    { $Type: 'UI.DataFieldForAction', Action: 'OnboardingService.approveOnboarding', Label: 'Approve' },
+    { Value: employeeNumber },
+    { Value: firstName },
+    { Value: lastName },
     { Value: department.name, Label: 'Department' },
     { Value: manager.employeeNumber, Label: 'Manager' },
     { Value: joiningDate, Label: 'Joining Date' },
+    { Value: onboardingProgress, Label: 'Progress' },
     { Value: status, Label: 'Status' }
+  ],
+  UI.Identification: [
+    { $Type: 'UI.DataFieldForAction', Action: 'OnboardingService.approveOnboarding', Label: 'Approve Onboarding' }
   ],
   UI.Facets: [
     { $Type: 'UI.ReferenceFacet', Label: 'General Information', Target: '@UI.FieldGroup#General' },
@@ -111,7 +122,18 @@ annotate service.Departments with @(
 annotate service.OnboardingTasks with @(
   UI.HeaderInfo: { TypeName: 'Onboarding Task', TypeNamePlural: 'Onboarding Tasks', Title: { Value: taskName }, Description: { Value: assignedTo } },
   UI.SelectionFields: [employee_ID, assignedTo, dueDate, priority, status],
-  UI.LineItem: [{ Value: taskName }, { Value: employee.employeeNumber, Label: 'Employee' }, { Value: assignedTo }, { Value: dueDate }, { Value: priority }, { Value: status }],
+  UI.LineItem: [
+    { $Type: 'UI.DataFieldForAction', Action: 'OnboardingService.digitallySign', Label: 'Digitally Sign' },
+    { Value: taskName }, 
+    { Value: employee.employeeNumber, Label: 'Employee' }, 
+    { Value: assignedTo }, 
+    { Value: dueDate }, 
+    { Value: priority }, 
+    { Value: status }
+  ],
+  UI.Identification: [
+    { $Type: 'UI.DataFieldForAction', Action: 'OnboardingService.digitallySign', Label: 'Digitally Sign Task' }
+  ],
   UI.Facets: [{ $Type: 'UI.ReferenceFacet', Label: 'Task Details', Target: '@UI.FieldGroup#Details' }],
   UI.FieldGroup#Details: { Data: [{ Value: taskName }, { Value: description }, { Value: employee_ID }, { Value: assignedTo }, { Value: dueDate }, { Value: priority }, { Value: status }] }
 );
@@ -120,8 +142,12 @@ annotate service.Documents with @(
   UI.HeaderInfo: { TypeName: 'Document', TypeNamePlural: 'Documents', Title: { Value: fileName }, Description: { Value: documentType } },
   UI.SelectionFields: [documentType, employee_ID, uploadedDate, status],
   UI.LineItem: [{ Value: documentType }, { Value: fileName }, { Value: employee.employeeNumber, Label: 'Employee' }, { Value: uploadedDate }, { Value: status }],
-  UI.Facets: [{ $Type: 'UI.ReferenceFacet', Label: 'Document Details', Target: '@UI.FieldGroup#Details' }],
-  UI.FieldGroup#Details: { Data: [{ Value: documentType }, { Value: fileName }, { Value: mediaType }, { Value: employee_ID }, { Value: uploadedDate }, { Value: status }] }
+  UI.Facets: [
+    { $Type: 'UI.ReferenceFacet', Label: 'Document Details', Target: '@UI.FieldGroup#Details' },
+    { $Type: 'UI.ReferenceFacet', Label: 'Attachment', Target: '@UI.FieldGroup#Attachment' }
+  ],
+  UI.FieldGroup#Details: { Data: [{ Value: documentType }, { Value: fileName }, { Value: employee_ID }, { Value: uploadedDate }, { Value: status }] },
+  UI.FieldGroup#Attachment: { Data: [{ Value: fileContent, Label: 'Upload File' }, { Value: mediaType }] }
 );
 
 annotate service.Assets with @(

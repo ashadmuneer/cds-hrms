@@ -55,22 +55,22 @@
         "[development]": {
           "kind": "mocked",
           "users": {
-            "hr.admin": {
+            "john.smith@company.com": {
               "roles": [
                 "HRAdmin"
               ]
             },
-            "hr.manager": {
+            "priya.sharma@company.com": {
               "roles": [
                 "HRManager"
               ]
             },
-            "it.admin": {
+            "sarah.connor@company.com": {
               "roles": [
                 "ITAdmin"
               ]
             },
-            "employee": {
+            "emily.chen@company.com": {
               "roles": [
                 "Employee"
               ]

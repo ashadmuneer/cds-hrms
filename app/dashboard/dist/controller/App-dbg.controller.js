@@ -23,7 +23,7 @@ sap.ui.define(
     var STANDALONE_URLS = {
       employees:   "/employees/index.html",
       departments: "/departments/index.html",
-      tasks:       "/onboarding-tasks/index.html",
+      tasks:       "/onboardingtasks/index.html",
       documents:   "/documents/index.html",
       assets:      "/assets/index.html",
       trainings:   "/trainings/index.html",

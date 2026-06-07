@@ -1,11 +1,11 @@
 ID;taskName;description;employee_ID;assignedTo;dueDate;priority;status
-dddddddd-dddd-dddd-dddd-ddddddddddd1;Setup IT Equipment;Provide laptop and monitors;cccccccc-cccc-cccc-cccc-cccccccccccc;it.admin@company.com;2026-06-12;High;Pending
+dddddddd-dddd-dddd-dddd-ddddddddddd1;Setup IT Equipment;Provide laptop and monitors;cccccccc-cccc-cccc-cccc-cccccccccccc;sarah.connor@company.com;2026-06-12;High;Pending
 dddddddd-dddd-dddd-dddd-ddddddddddd2;Sign Code of Conduct;Read and sign the company code of conduct;cccccccc-cccc-cccc-cccc-cccccccccccc;emily.chen@company.com;2026-06-11;High;Completed
 dddddddd-dddd-dddd-dddd-ddddddddddd3;Security Training;Complete mandatory cybersecurity training;cccccccc-cccc-cccc-cccc-cccccccccccc;emily.chen@company.com;2026-06-15;Medium;Pending
-dddddddd-dddd-dddd-dddd-ddddddddddd4;Welcome Package;Prepare and deliver employee welcome kit;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;hr.admin@company.com;2026-06-08;Medium;Completed
-dddddddd-dddd-dddd-dddd-ddddddddddd5;Create Email Account;Provision email account and distribution lists;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;it.admin@company.com;2026-06-06;High;Completed
-dddddddd-dddd-dddd-dddd-ddddddddddd6;Payroll Enrollment;Register employee in payroll system;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;hr.admin@company.com;2026-06-09;Critical;Pending
-dddddddd-dddd-dddd-dddd-ddddddddddd7;Badge and Access Card;Issue building access card;cccccccc-cccc-cccc-cccc-cccccccccccc;it.admin@company.com;2026-06-13;Medium;InProgress
-dddddddd-dddd-dddd-dddd-ddddddddddd8;Benefits Orientation;Complete benefits overview session;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;hr.manager@company.com;2026-06-10;High;Completed
+dddddddd-dddd-dddd-dddd-ddddddddddd4;Welcome Package;Prepare and deliver employee welcome kit;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;john.smith@company.com;2026-06-08;Medium;Completed
+dddddddd-dddd-dddd-dddd-ddddddddddd5;Create Email Account;Provision email account and distribution lists;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;sarah.connor@company.com;2026-06-06;High;Completed
+dddddddd-dddd-dddd-dddd-ddddddddddd6;Payroll Enrollment;Register employee in payroll system;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;john.smith@company.com;2026-06-09;Critical;Pending
+dddddddd-dddd-dddd-dddd-ddddddddddd7;Badge and Access Card;Issue building access card;cccccccc-cccc-cccc-cccc-cccccccccccc;sarah.connor@company.com;2026-06-13;Medium;InProgress
+dddddddd-dddd-dddd-dddd-ddddddddddd8;Benefits Orientation;Complete benefits overview session;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;priya.sharma@company.com;2026-06-10;High;Completed
 dddddddd-dddd-dddd-dddd-ddddddddddd9;Team Introduction;Schedule intro meeting with team members;cccccccc-cccc-cccc-cccc-cccccccccccc;emily.chen@company.com;2026-06-14;Low;Pending
-dddddddd-dddd-dddd-dddd-dddddddddd10;VPN Setup;Configure VPN access for remote work;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;it.admin@company.com;2026-06-07;High;InProgress
+dddddddd-dddd-dddd-dddd-dddddddddd10;VPN Setup;Configure VPN access for remote work;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;sarah.connor@company.com;2026-06-07;High;InProgress
