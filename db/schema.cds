@@ -82,9 +82,9 @@ entity Employees : cuid, managed {
   emergencyPhone       : String(30);
   status               : EmployeeStatus default #Pending;
   onboardingProgress   : Decimal(5,2) default 0;
-  documents            : Composition of many Documents on documents.employee = $self;
-  tasks                : Composition of many OnboardingTasks on tasks.employee = $self;
-  trainings            : Composition of many Trainings on trainings.employee = $self;
+  documents            : Association to many Documents on documents.employee = $self;
+  tasks                : Association to many OnboardingTasks on tasks.employee = $self;
+  trainings            : Association to many Trainings on trainings.employee = $self;
   assets               : Association to many Assets on assets.employee = $self;
 }
 
