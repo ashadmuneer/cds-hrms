@@ -11,7 +11,7 @@
             "dashboard": { title: "Dashboard", description: "Analytics Overview", icon: "sap-icon://barchart", applicationType: "URL", url: "/dashboard", additionalInformation: "SAPUI5.Component=dashboard" },
             "employees": { title: "Employees", description: "Manage Profiles", icon: "sap-icon://employee", applicationType: "URL", url: "/employees", additionalInformation: "SAPUI5.Component=employees" },
             "departments": { title: "Departments", description: "Manage Departments", icon: "sap-icon://corporate", applicationType: "URL", url: "/departments", additionalInformation: "SAPUI5.Component=departments" },
-            "tasks": { title: "Onboarding Tasks", description: "Onboarding Tasks", icon: "sap-icon://task", applicationType: "URL", url: "/onboarding-tasks", additionalInformation: "SAPUI5.Component=onboardingtasks" },
+            "tasks": { title: "Onboarding Tasks", description: "Onboarding Tasks", icon: "sap-icon://task", applicationType: "URL", url: "/onboardingtasks", additionalInformation: "SAPUI5.Component=onboardingtasks" },
             "documents": { title: "Documents", description: "Employee Documents", icon: "sap-icon://document", applicationType: "URL", url: "/documents", additionalInformation: "SAPUI5.Component=documents" },
             "assets": { title: "Assets", description: "Equipment & Assets", icon: "sap-icon://laptop", applicationType: "URL", url: "/assets", additionalInformation: "SAPUI5.Component=assets" },
             "trainings": { title: "Trainings", description: "Training Modules", icon: "sap-icon://education", applicationType: "URL", url: "/trainings", additionalInformation: "SAPUI5.Component=trainings" },
@@ -87,6 +87,7 @@
                     ui5Script.setAttribute("data-sap-ui-libs", "sap.m, sap.ushell, sap.ui.core, sap.ui.layout");
                     ui5Script.setAttribute("data-sap-ui-compatVersion", "edge");
                     ui5Script.setAttribute("data-sap-ui-async", "true");
+                    ui5Script.setAttribute("data-sap-ui-xx-componentPreload", "off");
                     ui5Script.onload = () => {
                         sap.ui.getCore().attachInit(() => {
                             // Use the modern asynchronous renderer to avoid deprecation warnings

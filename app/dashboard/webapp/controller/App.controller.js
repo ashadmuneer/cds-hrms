@@ -260,6 +260,9 @@ sap.ui.define(
           return aCtx.map(function (c) {
             return Object.assign({}, c.getObject());
           });
+        }).catch(function (err) {
+          console.warn("Skipping " + sPath + " due to missing permissions or load error.", err);
+          return [];
         });
       },
 
