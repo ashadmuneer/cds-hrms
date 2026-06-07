@@ -1,4 +1,9 @@
 ID;employeeNumber;firstName;lastName;email;phone;gender;department_ID;designation;joiningDate;employmentType;location;status;onboardingProgress
 aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;EMP-1001;Sarah;Connor;sarah.connor@company.com;+1-555-0101;Female;22222222-2222-2222-2222-222222222222;IT Support Specialist;2026-06-01;Full-Time;New York;Active;100
 bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;EMP-1002;John;Smith;john.smith@company.com;+1-555-0202;Male;11111111-1111-1111-1111-111111111111;HR Manager;2026-05-15;Full-Time;Chicago;Active;100
-cccccccc-cccc-cccc-cccc-cccccccccccc;EMP-1003;Emily;Chen;emily.chen@company.com;+1-555-0303;Female;33333333-3333-3333-3333-333333333333;Software Engineer;2026-06-10;Full-Time;San Francisco;Onboarding;33
+cccccccc-cccc-cccc-cccc-cccccccccccc;EMP-1003;Emily;Chen;emily.chen@company.com;+1-555-0303;Female;33333333-3333-3333-3333-333333333333;Software Engineer;2026-06-10;Full-Time;San Francisco;Pending;33
+dddddddd-aaaa-aaaa-aaaa-aaaaaaaaaaaa;EMP-1004;Michael;Johnson;michael.johnson@company.com;+1-555-0404;Male;33333333-3333-3333-3333-333333333333;DevOps Engineer;2026-05-25;Full-Time;Austin;Active;85
+eeeeeeee-aaaa-aaaa-aaaa-aaaaaaaaaaaa;EMP-1005;Priya;Sharma;priya.sharma@company.com;+1-555-0505;Female;11111111-1111-1111-1111-111111111111;HR Specialist;2026-06-03;Full-Time;Boston;Active;68
+ffffffff-aaaa-aaaa-aaaa-aaaaaaaaaaaa;EMP-1006;David;Williams;david.williams@company.com;+1-555-0606;Male;22222222-2222-2222-2222-222222222222;Network Administrator;2026-06-05;Full-Time;Seattle;Pending;20
+aaaaaaaa-bbbb-bbbb-bbbb-aaaaaaaaaaaa;EMP-1007;Lisa;Anderson;lisa.anderson@company.com;+1-555-0707;Female;33333333-3333-3333-3333-333333333333;QA Engineer;2026-05-20;Contract;Denver;Active;92
+bbbbbbbb-cccc-cccc-cccc-aaaaaaaaaaaa;EMP-1008;James;Taylor;james.taylor@company.com;+1-555-0808;Male;11111111-1111-1111-1111-111111111111;Recruiter;2026-06-08;Full-Time;Miami;Pending;10

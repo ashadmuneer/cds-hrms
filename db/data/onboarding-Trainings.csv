@@ -1,0 +1,13 @@
+ID;course;description;employee_ID;dueDate;status;score;completedAt
+aa000001-0001-0001-0001-000000000001;Company Policy Overview;Understand company policies, mission, and values;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-10;Completed;95;2026-06-05
+aa000001-0001-0001-0001-000000000002;Cybersecurity Essentials;Learn best practices for data protection;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-12;Completed;88;2026-06-08
+aa000001-0002-0001-0001-000000000001;HR Systems Training;Navigate HR tools and processes;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;2026-06-08;Completed;92;2026-06-04
+aa000001-0002-0001-0001-000000000002;Workplace Safety;OSHA compliance and workplace safety;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;2026-06-15;Completed;78;2026-06-07
+aa000001-0003-0001-0001-000000000001;Company Policy Overview;Understand company policies, mission, and values;cccccccc-cccc-cccc-cccc-cccccccccccc;2026-06-20;Assigned;;
+aa000001-0003-0001-0001-000000000002;Git and DevOps Workflow;Source control and CI/CD pipeline training;cccccccc-cccc-cccc-cccc-cccccccccccc;2026-06-25;Assigned;;
+aa000001-0003-0001-0001-000000000003;Cybersecurity Essentials;Learn best practices for data protection;cccccccc-cccc-cccc-cccc-cccccccccccc;2026-06-18;InProgress;;
+aa000001-0004-0001-0001-000000000001;AWS Cloud Fundamentals;Cloud infrastructure overview;dddddddd-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-15;InProgress;;
+aa000001-0004-0001-0001-000000000002;Cybersecurity Essentials;Learn best practices for data protection;dddddddd-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-12;Completed;90;2026-06-10
+aa000001-0005-0001-0001-000000000001;Company Policy Overview;Understand company policies, mission, and values;eeeeeeee-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-15;InProgress;;
+aa000001-0006-0001-0001-000000000001;Network Administration;Enterprise networking and security;ffffffff-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-20;Assigned;;
+aa000001-0008-0001-0001-000000000001;Company Policy Overview;Understand company policies, mission, and values;bbbbbbbb-cccc-cccc-cccc-aaaaaaaaaaaa;2026-06-22;Assigned;;

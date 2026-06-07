@@ -38,6 +38,11 @@ function collectApps(roles) {
 }
 
 cds.on("bootstrap", (app) => {
+  // Health endpoint for BTP monitoring
+  app.get("/health", (_req, res) => {
+    res.json({ status: "UP" });
+  });
+
   app.get("/api/me", (req, res) => {
     let user = req.user || cds.context?.user;
 
@@ -54,7 +59,9 @@ cds.on("bootstrap", (app) => {
               attr: payload,
               is: (role) => payload.scope && payload.scope.some(s => s.endsWith(`.${role}`))
             };
-          } catch (e) {}
+          } catch (e) {
+            console.warn("[api/me] JWT decode error:", e.message);
+          }
         } else if (authHeader.startsWith("Basic ")) {
           try {
             const credentials = Buffer.from(authHeader.split(" ")[1], "base64").toString("utf8");
@@ -67,11 +74,14 @@ cds.on("bootstrap", (app) => {
               attr: { name: username },
               is: (role) => mockUser.roles && mockUser.roles.includes(role)
             };
-          } catch (e) {}
+          } catch (e) {
+            console.warn("[api/me] Basic auth decode error:", e.message);
+          }
         }
       }
     }
 
+    // If still no user at all (no auth header, unauthenticated), return a safe default
     const safeUser = user || {};
     const roles = collectRoles(safeUser);
     const apps = collectApps(roles);

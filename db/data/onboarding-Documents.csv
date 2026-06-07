@@ -1,0 +1,15 @@
+ID;documentType;fileName;mediaType;uploadedDate;status;employee_ID
+ee000001-0001-0001-0001-000000000001;Passport;sarah_passport.pdf;application/pdf;2026-06-01;Verified;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0001-0001-0001-000000000002;National ID;sarah_id_card.pdf;application/pdf;2026-06-01;Verified;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0001-0001-0001-000000000003;Resume;sarah_resume.pdf;application/pdf;2026-05-28;Verified;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0002-0001-0001-000000000001;Passport;john_passport.pdf;application/pdf;2026-05-15;Verified;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+ee000001-0002-0001-0001-000000000002;Degree Certificate;john_degree.pdf;application/pdf;2026-05-16;Verified;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+ee000001-0003-0001-0001-000000000001;Passport;emily_passport.pdf;application/pdf;2026-06-10;Uploaded;cccccccc-cccc-cccc-cccc-cccccccccccc
+ee000001-0003-0001-0001-000000000002;Degree Certificate;emily_degree.pdf;application/pdf;2026-06-10;Pending;cccccccc-cccc-cccc-cccc-cccccccccccc
+ee000001-0003-0001-0001-000000000003;National ID;emily_id_card.pdf;application/pdf;2026-06-11;Pending;cccccccc-cccc-cccc-cccc-cccccccccccc
+ee000001-0004-0001-0001-000000000001;Passport;michael_passport.pdf;application/pdf;2026-05-25;Verified;dddddddd-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0004-0001-0001-000000000002;Background Check;michael_bgcheck.pdf;application/pdf;2026-05-26;Uploaded;dddddddd-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0005-0001-0001-000000000001;Resume;priya_resume.pdf;application/pdf;2026-06-03;Verified;eeeeeeee-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0005-0001-0001-000000000002;Offer Letter;priya_offer.pdf;application/pdf;2026-06-03;Pending;eeeeeeee-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0006-0001-0001-000000000001;Passport;david_passport.pdf;application/pdf;2026-06-05;Pending;ffffffff-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+ee000001-0008-0001-0001-000000000001;Resume;james_resume.pdf;application/pdf;2026-06-08;Uploaded;bbbbbbbb-cccc-cccc-cccc-aaaaaaaaaaaa

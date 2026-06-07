@@ -15,11 +15,6 @@
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"resources": "resources.json",
-		"sourceTemplate": {
-			"id": "@sap/generator-fiori:alp",
-			"version": "1.24.0",
-			"toolsId": "07d7f0bd-9888-4d0d-8309-d7733ddc4b31"
-		},
 		"dataSources": {
 			"mainService": {
 				"uri": "/odata/v4/onboarding/",
@@ -41,36 +36,6 @@
 						"additionalParameters": "allowed"
 					}
 				}
-			},
-			"outbounds": {
-				"toEmployees": {
-					"semanticObject": "Employees",
-					"action": "manage"
-				},
-				"toDepartments": {
-					"semanticObject": "Departments",
-					"action": "manage"
-				},
-				"toOnboardingTasks": {
-					"semanticObject": "OnboardingTasks",
-					"action": "manage"
-				},
-				"toDocuments": {
-					"semanticObject": "Documents",
-					"action": "manage"
-				},
-				"toAssets": {
-					"semanticObject": "Assets",
-					"action": "manage"
-				},
-				"toTrainings": {
-					"semanticObject": "Trainings",
-					"action": "manage"
-				},
-				"toReports": {
-					"semanticObject": "Reports",
-					"action": "display"
-				}
 			}
 		}
 	},
@@ -91,14 +56,19 @@
 		}
 	},
 	"sap.ui5": {
-		"flexEnabled": true,
+		"flexEnabled": false,
+		"rootView": {
+			"viewName": "dashboard.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "app"
+		},
 		"dependencies": {
 			"minUI5Version": "1.136.7",
 			"libs": {
 				"sap.m": {},
 				"sap.ui.core": {},
-				"sap.ui.layout": {},
-				"sap.fe.templates": {}
+				"sap.ui.layout": {}
 			}
 		},
 		"contentDensities": {
@@ -123,15 +93,6 @@
 					"autoExpandSelect": true,
 					"earlyRequests": true
 				}
-			},
-			"@i18n": {
-				"type": "sap.ui.model.resource.ResourceModel",
-				"uri": "i18n/i18n.properties",
-				"settings": {
-					"supportedLocales": [
-						""
-					]
-				}
 			}
 		},
 		"resources": {
@@ -141,51 +102,10 @@
 				}
 			]
 		},
-		"routing": {
-			"config": {},
-			"routes": [
-				{
-					"pattern": ":?query:",
-					"name": "DashboardList",
-					"target": "DashboardList"
-				}
-			],
-			"targets": {
-				"DashboardList": {
-					"type": "Component",
-					"id": "DashboardList",
-					"name": "sap.fe.templates.ListReport",
-					"options": {
-						"settings": {
-							"contextPath": "/EmployeeOverview",
-							"variantManagement": "Page",
-							"initialLoad": true,
-							"controlConfiguration": {
-								"@com.sap.vocabularies.UI.v1.LineItem": {
-									"tableSettings": {
-										"type": "ResponsiveTable"
-									}
-								},
-								"@com.sap.vocabularies.UI.v1.Chart": {
-									"chartSettings": {
-										"personalization": true
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"flexBundle": false
 	},
 	"sap.fiori": {
 		"registrationIds": [],
 		"archeType": "analytical"
-	},
-	"sap.fe": {
-		"app": {
-			"enableLazyLoading": true
-		}
 	}
 }

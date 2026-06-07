@@ -1,0 +1,11 @@
+ID;assetNumber;assetType;description;serialNumber;employee_ID;assignedDate;status
+ff000001-0001-0001-0001-000000000001;AST-001;Laptop;MacBook Pro 16 M3;MBPM3-2026-001;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-01;Assigned
+ff000001-0001-0001-0001-000000000002;AST-002;Monitor;Dell U2723QE 27-inch 4K;DLLU27-2026-002;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-06-01;Assigned
+ff000001-0002-0001-0001-000000000001;AST-003;Laptop;ThinkPad X1 Carbon;TPX1C-2026-003;bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb;2026-05-15;Assigned
+ff000001-0003-0001-0001-000000000001;AST-004;Laptop;MacBook Pro 14 M3;MBPM3-2026-004;;2026-06-12;Available
+ff000001-0003-0001-0001-000000000002;AST-005;Monitor;LG 32UN880 UltraFine;LG32UF-2026-005;;2026-06-12;Available
+ff000001-0004-0001-0001-000000000001;AST-006;Laptop;Dell XPS 15;DXPS15-2026-006;dddddddd-aaaa-aaaa-aaaa-aaaaaaaaaaaa;2026-05-25;Assigned
+ff000001-0005-0001-0001-000000000001;AST-007;Keyboard;Apple Magic Keyboard;AMK-2026-007;;2026-06-20;Available
+ff000001-0005-0001-0001-000000000002;AST-008;Mouse;Logitech MX Master 3;LMXM3-2026-008;;2026-06-20;Available
+ff000001-0006-0001-0001-000000000001;AST-009;Monitor;Samsung 34 Ultrawide;SM34U-2026-009;;2026-06-25;Maintenance
+ff000001-0007-0001-0001-000000000001;AST-010;Laptop;HP EliteBook 840;HPEB840-2026-010;;2026-06-30;Retired

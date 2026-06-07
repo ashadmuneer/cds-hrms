@@ -5,12 +5,12 @@
     xmlns:core="sap.ui.core">
     <App>
         <Page
-            title="{i18n>appTitle}"
+            title="Onboarding Dashboard"
             showNavButton="false"
             class="dashboardPage">
             <customHeader>
                 <OverflowToolbar class="dashboardHeader">
-                    <Title text="{i18n>appTitle}" level="H1"/>
+                    <Title text="Onboarding Dashboard" level="H1"/>
                     <ToolbarSpacer/>
                     <ObjectStatus
                         text="{dashboard>/lastUpdatedText}"
@@ -25,7 +25,7 @@
                         icon="sap-icon://key-user-settings"
                         state="Information"/>
                     <Button
-                        text="{i18n>employees}"
+                        text="Employees"
                         icon="sap-icon://employee"
                         type="Transparent"
                         press=".onNavigate"
@@ -35,7 +35,7 @@
                         </customData>
                     </Button>
                     <Button
-                        text="{i18n>departments}"
+                        text="Departments"
                         icon="sap-icon://org-chart"
                         type="Transparent"
                         press=".onNavigate"
@@ -45,7 +45,7 @@
                         </customData>
                     </Button>
                     <Button
-                        text="{i18n>tasks}"
+                        text="Tasks"
                         icon="sap-icon://task"
                         type="Transparent"
                         press=".onNavigate"
@@ -55,7 +55,7 @@
                         </customData>
                     </Button>
                     <Button
-                        text="{i18n>documents}"
+                        text="Documents"
                         icon="sap-icon://documents"
                         type="Transparent"
                         press=".onNavigate"
@@ -65,7 +65,7 @@
                         </customData>
                     </Button>
                     <Button
-                        text="{i18n>assets}"
+                        text="Assets"
                         icon="sap-icon://laptop"
                         type="Transparent"
                         press=".onNavigate"
@@ -75,7 +75,7 @@
                         </customData>
                     </Button>
                     <Button
-                        text="{i18n>training}"
+                        text="Training"
                         icon="sap-icon://learning-assistant"
                         type="Transparent"
                         press=".onNavigate"
@@ -85,7 +85,7 @@
                         </customData>
                     </Button>
                     <Button
-                        text="{i18n>reports}"
+                        text="Reports"
                         icon="sap-icon://business-objects-experience"
                         type="Transparent"
                         press=".onNavigate"
@@ -97,8 +97,21 @@
                     <Button
                         icon="sap-icon://refresh"
                         type="Transparent"
-                        tooltip="{i18n>refresh}"
+                        tooltip="Refresh"
                         press=".onRefresh"/>
+                    <ToolbarSeparator/>
+                    <Button
+                        icon="sap-icon://home"
+                        text="Home"
+                        type="Transparent"
+                        tooltip="Back to Launchpad"
+                        press=".onHome"/>
+                    <Button
+                        icon="sap-icon://log"
+                        text="Sign Out"
+                        type="Transparent"
+                        tooltip="Sign Out"
+                        press=".onLogout"/>
                 </OverflowToolbar>
             </customHeader>
             <content>
@@ -106,8 +119,8 @@
                     <VBox class="dashboardShell" busy="{dashboard>/busy}">
                         <HBox class="dashboardHero" renderType="Bare" wrap="Wrap" alignItems="Center">
                             <VBox class="dashboardHeroText">
-                                <Title text="{i18n>dashboardTitle}" level="H2"/>
-                                <Text text="{i18n>dashboardSubtitle}" class="dashboardSubtleText"/>
+                                <Title text="Employee Onboarding Command Center" level="H2"/>
+                                <Text text="Operational view across people, tasks, documents, assets, and training readiness." class="dashboardSubtleText"/>
                             </VBox>
                             <ToolbarSpacer/>
                             <HBox class="dashboardHeroMetrics" renderType="Bare" wrap="Wrap">
@@ -118,12 +131,12 @@
                                     state="{dashboard>/kpis/avgProgress/state}"/>
                                 <ObjectNumber
                                     number="{dashboard>/kpis/pendingTasks/value}"
-                                    unit="{i18n>tasks}"
+                                    unit="Tasks"
                                     emphasized="true"
                                     state="{dashboard>/kpis/pendingTasks/state}"/>
                                 <ObjectNumber
                                     number="{dashboard>/kpis/overdueTasks/value}"
-                                    unit="{i18n>overdue}"
+                                    unit="Overdue"
                                     emphasized="true"
                                     state="{dashboard>/kpis/overdueTasks/state}"/>
                             </HBox>
@@ -134,19 +147,19 @@
                             class="dashboardTabs"
                             selectedKey="overview">
                             <items>
-                                <IconTabFilter key="overview" text="{i18n>overview}" icon="sap-icon://business-objects-experience">
+                                <IconTabFilter key="overview" text="Overview" icon="sap-icon://business-objects-experience">
                                     <VBox class="dashboardTabContent">
                                         <FlexBox
                                             class="kpiGrid"
                                             renderType="Bare"
                                             wrap="Wrap"
                                             alignItems="Stretch">
-                                            <GenericTile header="{i18n>employees}" subheader="{i18n>employeesSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/employees}">
+                                            <GenericTile header="Employees" subheader="Total onboarded profiles" class="kpiTile navTile" press=".onNavigate">
                                                 <customData>
                                                     <core:CustomData key="target" value="employees"/>
                                                 </customData>
                                                 <tileContent>
-                                                    <TileContent unit="{i18n>people}">
+                                                    <TileContent unit="People">
                                                         <NumericContent
                                                             icon="sap-icon://employee"
                                                             value="{dashboard>/kpis/totalEmployees/value}"
@@ -154,7 +167,7 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>avgProgress}" subheader="{i18n>avgProgressSub}" class="kpiTile">
+                                            <GenericTile header="Average Progress" subheader="Across active onboarding" class="kpiTile">
                                                 <tileContent>
                                                     <TileContent unit="%">
                                                         <NumericContent
@@ -164,12 +177,12 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>pendingTasks}" subheader="{i18n>pendingTasksSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/tasks}">
+                                            <GenericTile header="Pending Tasks" subheader="Open operational actions" class="kpiTile navTile" press=".onNavigate">
                                                 <customData>
                                                     <core:CustomData key="target" value="tasks"/>
                                                 </customData>
                                                 <tileContent>
-                                                    <TileContent unit="{i18n>open}">
+                                                    <TileContent unit="Open">
                                                         <NumericContent
                                                             icon="sap-icon://task"
                                                             value="{dashboard>/kpis/pendingTasks/value}"
@@ -177,12 +190,12 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>documents}" subheader="{i18n>documentsSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/documents}">
+                                            <GenericTile header="Documents" subheader="Awaiting verification" class="kpiTile navTile" press=".onNavigate">
                                                 <customData>
                                                     <core:CustomData key="target" value="documents"/>
                                                 </customData>
                                                 <tileContent>
-                                                    <TileContent unit="{i18n>open}">
+                                                    <TileContent unit="Open">
                                                         <NumericContent
                                                             icon="sap-icon://documents"
                                                             value="{dashboard>/kpis/openDocuments/value}"
@@ -190,12 +203,12 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>assets}" subheader="{i18n>assetsSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/assets}">
+                                            <GenericTile header="Assets" subheader="Available for allocation" class="kpiTile navTile" press=".onNavigate">
                                                 <customData>
                                                     <core:CustomData key="target" value="assets"/>
                                                 </customData>
                                                 <tileContent>
-                                                    <TileContent unit="{i18n>available}">
+                                                    <TileContent unit="Available">
                                                         <NumericContent
                                                             icon="sap-icon://laptop"
                                                             value="{dashboard>/kpis/availableAssets/value}"
@@ -203,7 +216,7 @@
                                                     </TileContent>
                                                 </tileContent>
                                             </GenericTile>
-                                            <GenericTile header="{i18n>training}" subheader="{i18n>trainingSub}" class="kpiTile navTile" press=".onNavigate" visible="{dashboard>/session/access/trainings}">
+                                            <GenericTile header="Training" subheader="Completion coverage" class="kpiTile navTile" press=".onNavigate">
                                                 <customData>
                                                     <core:CustomData key="target" value="trainings"/>
                                                 </customData>
@@ -219,7 +232,7 @@
                                         </FlexBox>
 
                                         <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
-                                            <Panel headerText="{i18n>departmentProgress}" class="dashboardPanel">
+                                            <Panel headerText="Department Progress" class="dashboardPanel">
                                                 <List items="{dashboard>/departmentProgress}" showSeparators="Inner">
                                                     <CustomListItem>
                                                         <VBox class="chartRow">
@@ -236,8 +249,8 @@
                                                 </List>
                                             </Panel>
 
-                                            <Panel headerText="{i18n>attentionRequired}" class="dashboardPanel">
-                                                <List items="{dashboard>/peopleAtRisk}" noDataText="{i18n>noRisks}" showSeparators="Inner">
+                                            <Panel headerText="Attention Required" class="dashboardPanel">
+                                                <List items="{dashboard>/peopleAtRisk}" noDataText="No employee onboarding risks" showSeparators="Inner">
                                                     <ObjectListItem
                                                         title="{dashboard>name}"
                                                         number="{dashboard>progress}"
@@ -255,13 +268,13 @@
                                     </VBox>
                                 </IconTabFilter>
 
-                                <IconTabFilter key="kpis" text="{i18n>kpiPage}" icon="sap-icon://performance">
+                                <IconTabFilter key="kpis" text="KPIs" icon="sap-icon://performance">
                                     <VBox class="dashboardTabContent">
                                         <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
-                                            <Panel headerText="{i18n>executiveScorecard}" class="dashboardPanel widePanel">
+                                            <Panel headerText="Executive Scorecard" class="dashboardPanel widePanel">
                                                 <VBox class="scorecard">
                                                     <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
-                                                        <Text text="{i18n>avgProgress}"/>
+                                                        <Text text="Average Progress"/>
                                                         <ProgressIndicator
                                                             width="55%"
                                                             percentValue="{dashboard>/kpis/avgProgress/value}"
@@ -269,7 +282,7 @@
                                                             state="{dashboard>/kpis/avgProgress/state}"/>
                                                     </HBox>
                                                     <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
-                                                        <Text text="{i18n>trainingCompletion}"/>
+                                                        <Text text="Training Completion"/>
                                                         <ProgressIndicator
                                                             width="55%"
                                                             percentValue="{dashboard>/kpis/trainingCompletion/value}"
@@ -277,7 +290,7 @@
                                                             state="{dashboard>/kpis/trainingCompletion/state}"/>
                                                     </HBox>
                                                     <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
-                                                        <Text text="{i18n>taskClosure}"/>
+                                                        <Text text="Task Closure"/>
                                                         <ProgressIndicator
                                                             width="55%"
                                                             percentValue="{dashboard>/kpis/taskClosure/value}"
@@ -285,7 +298,7 @@
                                                             state="{dashboard>/kpis/taskClosure/state}"/>
                                                     </HBox>
                                                     <HBox class="scorecardRow" justifyContent="SpaceBetween" alignItems="Center">
-                                                        <Text text="{i18n>documentReadiness}"/>
+                                                        <Text text="Document Readiness"/>
                                                         <ProgressIndicator
                                                             width="55%"
                                                             percentValue="{dashboard>/kpis/documentReadiness/value}"
@@ -294,22 +307,22 @@
                                                     </HBox>
                                                 </VBox>
                                             </Panel>
-                                            <Panel headerText="{i18n>operationalRisk}" class="dashboardPanel">
+                                            <Panel headerText="Operational Risk" class="dashboardPanel">
                                                 <List>
-                                                    <ObjectListItem title="{i18n>overdueTasks}" number="{dashboard>/kpis/overdueTasks/value}" numberState="{dashboard>/kpis/overdueTasks/state}"/>
-                                                    <ObjectListItem title="{i18n>highPriorityTasks}" number="{dashboard>/kpis/highPriorityTasks/value}" numberState="{dashboard>/kpis/highPriorityTasks/state}"/>
-                                                    <ObjectListItem title="{i18n>pendingDocuments}" number="{dashboard>/kpis/openDocuments/value}" numberState="{dashboard>/kpis/openDocuments/state}"/>
-                                                    <ObjectListItem title="{i18n>inactiveEmployees}" number="{dashboard>/kpis/inactiveEmployees/value}" numberState="{dashboard>/kpis/inactiveEmployees/state}"/>
+                                                    <ObjectListItem title="Overdue Tasks" number="{dashboard>/kpis/overdueTasks/value}" numberState="{dashboard>/kpis/overdueTasks/state}"/>
+                                                    <ObjectListItem title="High Priority Tasks" number="{dashboard>/kpis/highPriorityTasks/value}" numberState="{dashboard>/kpis/highPriorityTasks/state}"/>
+                                                    <ObjectListItem title="Pending Documents" number="{dashboard>/kpis/openDocuments/value}" numberState="{dashboard>/kpis/openDocuments/state}"/>
+                                                    <ObjectListItem title="Inactive Employees" number="{dashboard>/kpis/inactiveEmployees/value}" numberState="{dashboard>/kpis/inactiveEmployees/state}"/>
                                                 </List>
                                             </Panel>
                                         </HBox>
                                     </VBox>
                                 </IconTabFilter>
 
-                                <IconTabFilter key="charts" text="{i18n>charts}" icon="sap-icon://business-objects-mobile">
+                                <IconTabFilter key="charts" text="Charts" icon="sap-icon://business-objects-mobile">
                                     <VBox class="dashboardTabContent">
                                         <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
-                                            <Panel headerText="{i18n>employeeStatus}" class="dashboardPanel">
+                                            <Panel headerText="Employee Status" class="dashboardPanel">
                                                 <List items="{dashboard>/statusDistribution}" showSeparators="Inner">
                                                     <CustomListItem>
                                                         <VBox class="chartRow">
@@ -325,7 +338,7 @@
                                                     </CustomListItem>
                                                 </List>
                                             </Panel>
-                                            <Panel headerText="{i18n>taskStatus}" class="dashboardPanel">
+                                            <Panel headerText="Task Status" class="dashboardPanel">
                                                 <List items="{dashboard>/taskDistribution}" showSeparators="Inner">
                                                     <CustomListItem>
                                                         <VBox class="chartRow">
@@ -341,7 +354,7 @@
                                                     </CustomListItem>
                                                 </List>
                                             </Panel>
-                                            <Panel headerText="{i18n>assetMix}" class="dashboardPanel">
+                                            <Panel headerText="Asset Availability" class="dashboardPanel">
                                                 <List items="{dashboard>/assetDistribution}" showSeparators="Inner">
                                                     <CustomListItem>
                                                         <VBox class="chartRow">
@@ -361,17 +374,17 @@
                                     </VBox>
                                 </IconTabFilter>
 
-                                <IconTabFilter key="worklist" text="{i18n>worklist}" icon="sap-icon://activities">
+                                <IconTabFilter key="worklist" text="Worklist" icon="sap-icon://activities">
                                     <VBox class="dashboardTabContent">
                                         <HBox class="dashboardColumns" renderType="Bare" wrap="Wrap" alignItems="Stretch">
-                                            <Panel headerText="{i18n>priorityTasks}" class="dashboardPanel widePanel">
-                                                <Table items="{dashboard>/priorityTasks}" noDataText="{i18n>noPriorityTasks}">
+                                            <Panel headerText="Priority Task Queue" class="dashboardPanel widePanel">
+                                                <Table items="{dashboard>/priorityTasks}" noDataText="No open priority tasks">
                                                     <columns>
-                                                        <Column><Text text="{i18n>task}"/></Column>
-                                                        <Column><Text text="{i18n>owner}"/></Column>
-                                                        <Column><Text text="{i18n>dueDate}"/></Column>
-                                                        <Column><Text text="{i18n>priority}"/></Column>
-                                                        <Column><Text text="{i18n>status}"/></Column>
+                                                        <Column><Text text="Task"/></Column>
+                                                        <Column><Text text="Owner"/></Column>
+                                                        <Column><Text text="Due Date"/></Column>
+                                                        <Column><Text text="Priority"/></Column>
+                                                        <Column><Text text="Status"/></Column>
                                                     </columns>
                                                     <items>
                                                         <ColumnListItem>
@@ -386,8 +399,8 @@
                                                     </items>
                                                 </Table>
                                             </Panel>
-                                            <Panel headerText="{i18n>documentQueue}" class="dashboardPanel">
-                                                <List items="{dashboard>/documentQueue}" noDataText="{i18n>noDocuments}">
+                                            <Panel headerText="Document Queue" class="dashboardPanel">
+                                                <List items="{dashboard>/documentQueue}" noDataText="No open documents">
                                                     <ObjectListItem
                                                         title="{dashboard>documentType}"
                                                         intro="{dashboard>fileName}"

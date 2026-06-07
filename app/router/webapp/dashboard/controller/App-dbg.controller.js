@@ -2,71 +2,51 @@ sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast",
-    "sap/ui/core/Popup",
-    "sap/ushell/Container",
+    "sap/m/MessageToast"
   ],
-  function (Controller, JSONModel, MessageToast, Popup, ShellContainer) {
+  function (Controller, JSONModel, MessageToast) {
     "use strict";
 
-    const APP_TARGETS = {
-      employees: {
-        semanticObject: "Employees",
-        action: "manage",
-        url: "../employees/",
-      },
-      departments: {
-        semanticObject: "Departments",
-        action: "manage",
-        url: "../departments/",
-      },
-      tasks: {
-        semanticObject: "OnboardingTasks",
-        action: "manage",
-        url: "../onboarding-tasks/",
-      },
-      documents: {
-        semanticObject: "Documents",
-        action: "manage",
-        url: "../documents/",
-      },
-      assets: {
-        semanticObject: "Assets",
-        action: "manage",
-        url: "../assets/",
-      },
-      trainings: {
-        semanticObject: "Trainings",
-        action: "manage",
-        url: "../trainings/",
-      },
-      reports: {
-        semanticObject: "Reports",
-        action: "display",
-        url: "../reports/",
-      },
+    // Maps dashboard target keys to FLP semantic objects and actions.
+    // These MUST match the intents defined in app/router/webapp/index.html
+    var NAV_TARGETS = {
+      employees:   { semanticObject: "Employees",   action: "manage" },
+      departments: { semanticObject: "Departments",  action: "manage" },
+      tasks:       { semanticObject: "Tasks",        action: "manage" },
+      documents:   { semanticObject: "Documents",    action: "manage" },
+      assets:      { semanticObject: "Assets",       action: "manage" },
+      trainings:   { semanticObject: "Trainings",    action: "manage" },
+      reports:     { semanticObject: "Reports",      action: "display" }
     };
 
-    const ROLE_TO_APPS = {
-      HRAdmin: ["employees", "departments", "tasks", "documents", "assets", "trainings", "reports"],
-      HRManager: ["employees", "departments", "tasks", "documents", "trainings", "reports"],
-      ITAdmin: ["tasks", "assets", "reports"],
-      Employee: ["tasks", "documents", "trainings", "reports"],
+    // Fallback URLs for standalone mode (not inside FLP)
+    var STANDALONE_URLS = {
+      employees:   "/employees/index.html",
+      departments: "/departments/index.html",
+      tasks:       "/onboarding-tasks/index.html",
+      documents:   "/documents/index.html",
+      assets:      "/assets/index.html",
+      trainings:   "/trainings/index.html",
+      reports:     "/reports/index.html"
     };
 
-    const PRIORITY_WEIGHT = {
+    var PRIORITY_WEIGHT = {
       Critical: 4,
       High: 3,
       Medium: 2,
-      Low: 1,
+      Low: 1
     };
 
     return Controller.extend("dashboard.controller.App", {
+
       onInit: function () {
-        this.getView().setModel(
-          new JSONModel(this._emptyDashboard()),
-          "dashboard",
-        );
+        var oDashboard = new JSONModel(this._emptyDashboard());
+        oDashboard.setSizeLimit(9999);
+        this.getView().setModel(oDashboard, "dashboard");
+
+        // Detect if running inside FLP shell
+        this._bInsideFLP = this._isInsideFLP();
+
         this._loadSession();
         this._loadDashboard();
       },
@@ -75,95 +55,167 @@ sap.ui.define(
         this._loadDashboard(true);
       },
 
+      /* ── Navigation (FLP-aware) ──────────────────────────── */
+
       onNavigate: function (oEvent) {
-        const sTarget = oEvent.getSource().data("target");
-        const mTarget = APP_TARGETS[sTarget];
-
-        if (!mTarget) {
-          this._showToast(
-            this.getResourceBundle().getText("navigationTargetMissing"),
-          );
+        var sTarget = oEvent.getSource().data("target");
+        if (!sTarget) {
+          MessageToast.show("Navigation target not configured");
           return;
         }
 
-        if (!this._isTargetAllowed(sTarget)) {
-          this._showToast(
-            this.getResourceBundle().getText("navigationNotAllowed"),
-          );
-          return;
+        if (this._bInsideFLP) {
+          this._navigateViaFLP(sTarget);
+        } else {
+          this._navigateStandalone(sTarget);
         }
-
-        this._getCrossApplicationNavigation()
-          .then(
-            function (oCrossAppNav) {
-              oCrossAppNav.toExternal({
-                target: mTarget,
-              });
-            }.bind(this),
-          )
-          .catch(
-            function () {
-              this._showToast(
-                this.getResourceBundle().getText(
-                  "standardNavigationUnavailable",
-                ),
-              );
-            }.bind(this),
-          );
       },
 
-      _showToast: function (sMessage) {
-        MessageToast.show(sMessage, {
-          my: Popup.Dock.CenterBottom,
-          at: Popup.Dock.CenterBottom,
+      onHome: function () {
+        if (this._bInsideFLP) {
+          // Navigate to FLP home (Shell-home)
+          this._getCrossAppNav().then(function (oCrossAppNav) {
+            oCrossAppNav.toExternal({
+              target: { shellHash: "#Shell-home" }
+            });
+          }).catch(function () {
+            window.location.href = "/";
+          });
+        } else {
+          window.location.href = "/";
+        }
+      },
+
+      onLogout: function () {
+        if (this._bInsideFLP && window.sap && window.sap.ushell && window.sap.ushell.Container) {
+          // Use FLP's built-in logout (which is overridden in router/index.html to /do/logout)
+          window.sap.ushell.Container.logout();
+        } else {
+          // Standalone: redirect to approuter logout endpoint
+          window.location.replace("/do/logout");
+        }
+      },
+
+      _navigateViaFLP: function (sTarget) {
+        var mTarget = NAV_TARGETS[sTarget];
+        if (!mTarget) {
+          MessageToast.show("Unknown target: " + sTarget);
+          return;
+        }
+
+        this._getCrossAppNav().then(function (oCrossAppNav) {
+          oCrossAppNav.toExternal({
+            target: {
+              semanticObject: mTarget.semanticObject,
+              action: mTarget.action
+            }
+          });
+        }).catch(function () {
+          // Fallback: if CrossAppNav fails, use hash navigation
+          var sHash = "#" + mTarget.semanticObject + "-" + mTarget.action;
+          window.location.hash = sHash;
         });
       },
 
-      _getCrossApplicationNavigation: function () {
-        if (!ShellContainer) {
-          return Promise.reject(
-            new Error("SAP Fiori launchpad shell is not available"),
-          );
+      _navigateStandalone: function (sTarget) {
+        var sUrl = STANDALONE_URLS[sTarget];
+        if (sUrl) {
+          window.open(sUrl, "_blank");
+        } else {
+          MessageToast.show("Unknown target: " + sTarget);
         }
-
-        if (ShellContainer.getServiceAsync) {
-          return ShellContainer.getServiceAsync("CrossApplicationNavigation");
-        }
-
-        return Promise.reject(
-          new Error("SAP Fiori launchpad shell does not support async navigation"),
-        );
       },
+
+      _getCrossAppNav: function () {
+        if (window.sap && window.sap.ushell && window.sap.ushell.Container) {
+          if (typeof window.sap.ushell.Container.getServiceAsync === "function") {
+            return window.sap.ushell.Container.getServiceAsync("CrossApplicationNavigation");
+          }
+          // Older API
+          try {
+            var oService = window.sap.ushell.Container.getService("CrossApplicationNavigation");
+            return Promise.resolve(oService);
+          } catch (e) {
+            return Promise.reject(e);
+          }
+        }
+        return Promise.reject(new Error("FLP shell not available"));
+      },
+
+      _isInsideFLP: function () {
+        // Check if the FLP shell container is available
+        return !!(window.sap && window.sap.ushell && window.sap.ushell.Container);
+      },
+
+      /* ── Session ─────────────────────────────────────────── */
 
       _loadSession: function () {
-        fetch("/api/me")
-          .then(function (oResponse) {
-            if (!oResponse.ok) {
-              throw new Error("Failed to resolve session");
-            }
+        var that = this;
 
-            return oResponse.json();
+        fetch("/api/me")
+          .then(function (r) {
+            if (!r.ok) { throw new Error("session"); }
+            return r.json();
           })
-          .then(
-            function (oUser) {
-              this.getView()
-                .getModel("dashboard")
-                .setProperty("/session", this._normalizeSession(oUser));
-            }.bind(this),
-          )
-          .catch(
-            function () {
-              this.getView()
-                .getModel("dashboard")
-                .setProperty("/session", this._emptySession());
-            }.bind(this),
-          );
+          .then(function (oUser) {
+            that._applySession(oUser);
+          })
+          .catch(function () {
+            // In local dev without auth → give full access
+            that._applySession({
+              id: "local-dev",
+              displayName: "Developer",
+              roles: ["HRAdmin"],
+              apps: ["employees","departments","tasks","documents","assets","trainings","reports","dashboard"]
+            });
+          });
       },
 
-      _loadDashboard: function (bShowToast) {
-        const oDashboardModel = this.getView().getModel("dashboard");
+      _applySession: function (oUser) {
+        var aRoles  = (oUser && oUser.roles) || [];
+        var mAccess = {
+          employees: false,
+          departments: false,
+          tasks: false,
+          documents: false,
+          assets: false,
+          trainings: false,
+          reports: true
+        };
 
-        oDashboardModel.setProperty("/busy", true);
+        var ROLE_MAP = {
+          HRAdmin:   ["employees","departments","tasks","documents","assets","trainings","reports"],
+          HRManager: ["employees","departments","tasks","documents","trainings","reports"],
+          ITAdmin:   ["tasks","assets","reports"],
+          Employee:  ["tasks","documents","trainings","reports"]
+        };
+
+        aRoles.forEach(function (sRole) {
+          (ROLE_MAP[sRole] || []).forEach(function (sApp) {
+            mAccess[sApp] = true;
+          });
+        });
+
+        var sName = (oUser && (oUser.displayName || oUser.id)) || "User";
+
+        this.getView().getModel("dashboard").setProperty("/session", {
+          loading: false,
+          userId: (oUser && oUser.id) || "",
+          displayName: sName,
+          userText: "Signed in as " + sName,
+          roleText: "Role: " + (aRoles.length ? aRoles.join(", ") : "–"),
+          accessText: "",
+          roles: aRoles,
+          access: mAccess
+        });
+      },
+
+      /* ── Data Loading ────────────────────────────────────── */
+
+      _loadDashboard: function (bShowToast) {
+        var that = this;
+        var oModel = this.getView().getModel("dashboard");
+        oModel.setProperty("/busy", true);
 
         Promise.all([
           this._readEntity("/Employees"),
@@ -171,533 +223,284 @@ sap.ui.define(
           this._readEntity("/OnboardingTasks"),
           this._readEntity("/Documents"),
           this._readEntity("/Assets"),
-          this._readEntity("/Trainings"),
+          this._readEntity("/Trainings")
         ])
-          .then(
-            function (aResults) {
-              const oData = this._buildDashboardData({
-                employees: aResults[0],
-                departments: aResults[1],
-                tasks: aResults[2],
-                documents: aResults[3],
-                assets: aResults[4],
-                trainings: aResults[5],
-              });
+          .then(function (aResults) {
+            var oData = that._buildDashboardData({
+              employees:   aResults[0],
+              departments: aResults[1],
+              tasks:       aResults[2],
+              documents:   aResults[3],
+              assets:      aResults[4],
+              trainings:   aResults[5]
+            });
 
-              oData.session =
-                oDashboardModel.getProperty("/session") ||
-                this._emptySession();
-              oDashboardModel.setData(oData);
+            // Preserve session
+            oData.session = oModel.getProperty("/session") || that._emptySession();
+            oModel.setData(oData);
 
-              if (bShowToast) {
-                this._showToast(
-                  this.getResourceBundle().getText("dashboardRefreshed"),
-                );
-              }
-            }.bind(this),
-          )
-          .catch(
-            function () {
-              this._showToast(
-                this.getResourceBundle().getText("dashboardLoadError"),
-              );
-            }.bind(this),
-          )
-          .finally(function () {
-            oDashboardModel.setProperty("/busy", false);
-          });
-      },
-
-      _normalizeSession: function (oUser) {
-        const aRoles = Array.isArray(oUser && oUser.roles)
-          ? oUser.roles.filter(function (sRole) {
-              return Boolean(ROLE_TO_APPS[sRole]);
-            })
-          : [];
-        const mAccess = this._resolveAccess(aRoles);
-        const aRoleLabels = aRoles.map(
-          function (sRole) {
-            return this.getResourceBundle().getText(sRole);
-          }.bind(this),
-        );
-        const aAllowedApps = Object.keys(mAccess)
-          .filter(function (sTarget) {
-            return mAccess[sTarget];
+            if (bShowToast) {
+              MessageToast.show("Dashboard refreshed");
+            }
           })
-          .map(
-            function (sTarget) {
-              return this.getResourceBundle().getText(sTarget);
-            }.bind(this),
-          );
-        const sDisplayName =
-          (oUser && oUser.displayName) || (oUser && oUser.id) || "User";
-
-        return {
-          loading: false,
-          userId: (oUser && oUser.id) || "",
-          displayName: sDisplayName,
-          userText: this.getResourceBundle().getText("signedInAs", [
-            sDisplayName,
-          ]),
-          roleText: this.getResourceBundle().getText("roleSummary", [
-            aRoleLabels.length ? aRoleLabels.join(", ") : "-",
-          ]),
-          accessText: this.getResourceBundle().getText("accessSummary", [
-            aAllowedApps.length ? aAllowedApps.join(", ") : "-",
-          ]),
-          roles: aRoles,
-          access: mAccess,
-        };
-      },
-
-      _resolveAccess: function (aRoles) {
-        const mAccess = {
-          employees: false,
-          departments: false,
-          tasks: false,
-          documents: false,
-          assets: false,
-          trainings: false,
-          reports: true,
-        };
-
-        aRoles.forEach(function (sRole) {
-          (ROLE_TO_APPS[sRole] || []).forEach(function (sTarget) {
-            mAccess[sTarget] = true;
+          .catch(function (err) {
+            console.error("Dashboard load error:", err);
+            MessageToast.show("Unable to load dashboard data");
+          })
+          .finally(function () {
+            oModel.setProperty("/busy", false);
           });
-        });
-
-        return mAccess;
-      },
-
-      _isTargetAllowed: function (sTarget) {
-        const oSession =
-          this.getView().getModel("dashboard").getProperty("/session") || {};
-        const mAccess = oSession.access || {};
-
-        return mAccess[sTarget] !== false;
       },
 
       _readEntity: function (sPath) {
-        const oModel = this.getOwnerComponent().getModel();
-        const oBinding = oModel.bindList(sPath);
+        var oDataModel = this.getOwnerComponent().getModel();
+        var oBinding = oDataModel.bindList(sPath);
 
-        return oBinding.requestContexts(0, 1000).then(function (aContexts) {
-          return aContexts.map(function (oContext) {
-            return Object.assign({}, oContext.getObject());
+        return oBinding.requestContexts(0, 9999).then(function (aCtx) {
+          return aCtx.map(function (c) {
+            return Object.assign({}, c.getObject());
           });
         });
       },
 
-      _buildDashboardData: function (mData) {
-        const aEmployees = mData.employees;
-        const aTasks = mData.tasks;
-        const aDocuments = mData.documents;
-        const aAssets = mData.assets;
-        const aTrainings = mData.trainings;
-        const mDepartments = this._mapById(mData.departments);
-        const iTotalEmployees = aEmployees.length;
-        const iAvgProgress = this._round(
-          this._average(aEmployees, "onboardingProgress"),
-        );
-        const iCompletedTasks = aTasks.filter(this._isCompleted).length;
-        const iPendingTasks = aTasks.length - iCompletedTasks;
-        const iOpenDocuments = aDocuments.filter(function (oDocument) {
-          return oDocument.status !== "Verified";
-        }).length;
-        const iCompletedTrainings = aTrainings.filter(this._isCompleted).length;
-        const iAvailableAssets = aAssets.filter(function (oAsset) {
-          return oAsset.status === "Available";
-        }).length;
-        const iOverdueTasks = this._getOverdueTasks(aTasks).length;
-        const iHighPriorityTasks = aTasks.filter(
-          function (oTask) {
-            return (
-              !this._isCompleted(oTask) &&
-              (oTask.priority === "High" || oTask.priority === "Critical")
-            );
-          }.bind(this),
-        ).length;
-        const iInactiveEmployees = aEmployees.filter(function (oEmployee) {
-          return (
-            oEmployee.status === "Inactive" || oEmployee.status === "OnLeave"
-          );
+      /* ── Build Dashboard Model ───────────────────────────── */
+
+      _buildDashboardData: function (m) {
+        var aEmp   = m.employees   || [];
+        var aDept  = m.departments || [];
+        var aTask  = m.tasks       || [];
+        var aDoc   = m.documents   || [];
+        var aAsset = m.assets      || [];
+        var aTrain = m.trainings   || [];
+
+        var mDepts = this._mapById(aDept);
+        var iTotal = aEmp.length;
+        var iAvg   = this._round(this._avg(aEmp, "onboardingProgress"));
+
+        var iCompletedTasks = aTask.filter(this._isCompleted).length;
+        var iPending = aTask.length - iCompletedTasks;
+
+        var iOpenDocs = aDoc.filter(function (d) { return d.status !== "Verified"; }).length;
+
+        var iCompletedTrainings = aTrain.filter(this._isCompleted).length;
+
+        var iAvailAssets = aAsset.filter(function (a) { return a.status === "Available"; }).length;
+
+        var iOverdue = this._overdueTasks(aTask).length;
+
+        var iHighPri = aTask.filter(function (t) {
+          return !this._isCompleted(t) && (t.priority === "High" || t.priority === "Critical");
+        }.bind(this)).length;
+
+        var iInactive = aEmp.filter(function (e) {
+          return e.status === "Inactive" || e.status === "OnLeave";
         }).length;
 
         return {
           busy: false,
-          lastUpdatedText: this._formatTimestamp(new Date()),
+          lastUpdatedText: "Updated " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }),
+
           kpis: {
-            totalEmployees: this._kpi(iTotalEmployees, "Neutral"),
-            avgProgress: this._percentKpi(iAvgProgress),
-            pendingTasks: this._riskKpi(iPendingTasks, iPendingTasks > 0),
-            overdueTasks: this._riskKpi(iOverdueTasks, iOverdueTasks > 0),
-            highPriorityTasks: this._riskKpi(
-              iHighPriorityTasks,
-              iHighPriorityTasks > 0,
-            ),
-            openDocuments: this._riskKpi(iOpenDocuments, iOpenDocuments > 0),
-            availableAssets: this._kpi(iAvailableAssets, "Good"),
-            trainingCompletion: this._percentKpi(
-              this._completionRate(iCompletedTrainings, aTrainings.length),
-            ),
-            taskClosure: this._percentKpi(
-              this._completionRate(iCompletedTasks, aTasks.length),
-            ),
-            documentReadiness: this._percentKpi(
-              this._completionRate(
-                aDocuments.length - iOpenDocuments,
-                aDocuments.length,
-              ),
-            ),
-            inactiveEmployees: this._riskKpi(
-              iInactiveEmployees,
-              iInactiveEmployees > 0,
-            ),
+            totalEmployees:     this._kpi(iTotal, "Neutral"),
+            avgProgress:        this._pctKpi(iAvg),
+            pendingTasks:       this._riskKpi(iPending, iPending > 0),
+            overdueTasks:       this._riskKpi(iOverdue, iOverdue > 0),
+            highPriorityTasks:  this._riskKpi(iHighPri, iHighPri > 0),
+            openDocuments:      this._riskKpi(iOpenDocs, iOpenDocs > 0),
+            availableAssets:    this._kpi(iAvailAssets, "Good"),
+            trainingCompletion: this._pctKpi(this._rate(iCompletedTrainings, aTrain.length)),
+            taskClosure:        this._pctKpi(this._rate(iCompletedTasks, aTask.length)),
+            documentReadiness:  this._pctKpi(this._rate(aDoc.length - iOpenDocs, aDoc.length)),
+            inactiveEmployees:  this._riskKpi(iInactive, iInactive > 0)
           },
-          departmentProgress: this._buildDepartmentProgress(
-            aEmployees,
-            mDepartments,
-          ),
-          peopleAtRisk: this._buildPeopleAtRisk(aEmployees, mDepartments),
-          statusDistribution: this._buildDistribution(aEmployees, "status"),
-          taskDistribution: this._buildDistribution(aTasks, "status"),
-          assetDistribution: this._buildDistribution(aAssets, "status"),
-          priorityTasks: this._buildPriorityTasks(aTasks),
-          documentQueue: this._buildDocumentQueue(aDocuments),
+
+          departmentProgress: this._deptProgress(aEmp, mDepts),
+          peopleAtRisk:       this._atRisk(aEmp, mDepts),
+          statusDistribution: this._distribution(aEmp, "status"),
+          taskDistribution:   this._distribution(aTask, "status"),
+          assetDistribution:  this._distribution(aAsset, "status"),
+          priorityTasks:      this._priorityQueue(aTask),
+          documentQueue:      this._docQueue(aDoc)
         };
       },
 
-      _buildDepartmentProgress: function (aEmployees, mDepartments) {
-        const mGroups = {};
+      _deptProgress: function (aEmp, mDepts) {
+        var groups = {};
+        var that = this;
 
-        aEmployees.forEach(
-          function (oEmployee) {
-            const sDepartmentName = this._getDepartmentName(
-              oEmployee,
-              mDepartments,
-            );
-            mGroups[sDepartmentName] = mGroups[sDepartmentName] || [];
-            mGroups[sDepartmentName].push(oEmployee);
-          }.bind(this),
-        );
-
-        return Object.keys(mGroups)
-          .sort()
-          .map(
-            function (sName) {
-              const aGroup = mGroups[sName];
-              const iAvgProgress = this._round(
-                this._average(aGroup, "onboardingProgress"),
-              );
-
-              return {
-                name: sName,
-                countText: this.getResourceBundle().getText("employeeCount", [
-                  aGroup.length,
-                ]),
-                avgProgress: iAvgProgress,
-                avgProgressText: `${iAvgProgress}%`,
-                state: this._stateFromPercent(iAvgProgress),
-              };
-            }.bind(this),
-          );
-      },
-
-      _buildPeopleAtRisk: function (aEmployees, mDepartments) {
-        return aEmployees
-          .filter(function (oEmployee) {
-            return (
-              Number(oEmployee.onboardingProgress || 0) < 75 ||
-              oEmployee.status === "Pending"
-            );
-          })
-          .sort(function (oLeft, oRight) {
-            return (
-              Number(oLeft.onboardingProgress || 0) -
-              Number(oRight.onboardingProgress || 0)
-            );
-          })
-          .slice(0, 6)
-          .map(
-            function (oEmployee) {
-              const iProgress = this._round(
-                Number(oEmployee.onboardingProgress || 0),
-              );
-
-              return {
-                name: `${oEmployee.firstName || ""} ${oEmployee.lastName || ""}`.trim(),
-                employeeNumber: oEmployee.employeeNumber,
-                departmentName: this._getDepartmentName(
-                  oEmployee,
-                  mDepartments,
-                ),
-                progress: iProgress,
-                state: this._stateFromPercent(iProgress),
-                statusText: this.getResourceBundle().getText(
-                  "employeeStatusText",
-                  [oEmployee.status || "-"],
-                ),
-              };
-            }.bind(this),
-          );
-      },
-
-      _buildDistribution: function (aItems, sProperty) {
-        const mGroups = {};
-        const iTotal = aItems.length || 1;
-
-        aItems.forEach(function (oItem) {
-          const sValue = oItem[sProperty] || "-";
-          mGroups[sValue] = (mGroups[sValue] || 0) + 1;
+        aEmp.forEach(function (e) {
+          var n = that._deptName(e, mDepts);
+          groups[n] = groups[n] || [];
+          groups[n].push(e);
         });
 
-        return Object.keys(mGroups)
-          .sort()
-          .map(
-            function (sStatus) {
-              const iCount = mGroups[sStatus];
-              const iShare = this._round((iCount / iTotal) * 100);
-
-              return {
-                status: sStatus,
-                count: iCount,
-                countText: this.getResourceBundle().getText("itemCount", [
-                  iCount,
-                ]),
-                share: iShare,
-                shareText: `${iShare}%`,
-                state: this._stateFromStatus(sStatus),
-              };
-            }.bind(this),
-          );
+        return Object.keys(groups).sort().map(function (name) {
+          var g   = groups[name];
+          var avg = that._round(that._avg(g, "onboardingProgress"));
+          return {
+            name: name,
+            countText: g.length + " employee(s)",
+            avgProgress: avg,
+            avgProgressText: avg + "%",
+            state: that._pctState(avg)
+          };
+        });
       },
 
-      _buildPriorityTasks: function (aTasks) {
+      _atRisk: function (aEmp, mDepts) {
+        var that = this;
+        return aEmp
+          .filter(function (e) {
+            return Number(e.onboardingProgress || 0) < 75 || e.status === "Pending";
+          })
+          .sort(function (a, b) {
+            return Number(a.onboardingProgress || 0) - Number(b.onboardingProgress || 0);
+          })
+          .slice(0, 6)
+          .map(function (e) {
+            var p = that._round(Number(e.onboardingProgress || 0));
+            return {
+              name: ((e.firstName || "") + " " + (e.lastName || "")).trim(),
+              employeeNumber: e.employeeNumber,
+              departmentName: that._deptName(e, mDepts),
+              progress: p,
+              state: that._pctState(p),
+              statusText: "Status: " + (e.status || "–")
+            };
+          });
+      },
+
+      _distribution: function (aItems, sProp) {
+        var groups = {};
+        var total  = aItems.length || 1;
+        var that   = this;
+
+        aItems.forEach(function (o) {
+          var v = o[sProp] || "–";
+          groups[v] = (groups[v] || 0) + 1;
+        });
+
+        return Object.keys(groups).sort().map(function (s) {
+          var c = groups[s];
+          var sh = that._round((c / total) * 100);
+          return {
+            status: s,
+            count: c,
+            countText: c + " item(s)",
+            share: sh,
+            shareText: sh + "%",
+            state: that._statusState(s)
+          };
+        });
+      },
+
+      _priorityQueue: function (aTasks) {
+        var that = this;
         return aTasks
-          .filter(
-            function (oTask) {
-              return !this._isCompleted(oTask);
-            }.bind(this),
-          )
-          .sort(function (oLeft, oRight) {
-            const iPriorityDelta =
-              (PRIORITY_WEIGHT[oRight.priority] || 0) -
-              (PRIORITY_WEIGHT[oLeft.priority] || 0);
-
-            if (iPriorityDelta !== 0) {
-              return iPriorityDelta;
-            }
-
-            return new Date(oLeft.dueDate || 0) - new Date(oRight.dueDate || 0);
+          .filter(function (t) { return !that._isCompleted(t); })
+          .sort(function (a, b) {
+            var d = (PRIORITY_WEIGHT[b.priority] || 0) - (PRIORITY_WEIGHT[a.priority] || 0);
+            return d !== 0 ? d : new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
           })
           .slice(0, 8)
-          .map(
-            function (oTask) {
-              return {
-                taskName: oTask.taskName,
-                assignedTo: oTask.assignedTo,
-                dueDateText: this._formatDate(oTask.dueDate),
-                priority: oTask.priority,
-                priorityState: this._stateFromPriority(oTask.priority),
-                status: oTask.status,
-                state: this._stateFromStatus(oTask.status),
-              };
-            }.bind(this),
-          );
+          .map(function (t) {
+            return {
+              taskName:      t.taskName,
+              assignedTo:    t.assignedTo,
+              dueDateText:   that._fmtDate(t.dueDate),
+              priority:      t.priority,
+              priorityState: that._priState(t.priority),
+              status:        t.status,
+              state:         that._statusState(t.status)
+            };
+          });
       },
 
-      _buildDocumentQueue: function (aDocuments) {
-        return aDocuments
-          .filter(function (oDocument) {
-            return oDocument.status !== "Verified";
-          })
-          .map(
-            function (oDocument) {
-              return {
-                documentType: oDocument.documentType,
-                fileName: oDocument.fileName,
-                uploadedDateText: this._formatDate(oDocument.uploadedDate),
-                status: oDocument.status,
-                state: this._stateFromStatus(oDocument.status),
-              };
-            }.bind(this),
-          );
+      _docQueue: function (aDocs) {
+        var that = this;
+        return aDocs
+          .filter(function (d) { return d.status !== "Verified"; })
+          .map(function (d) {
+            return {
+              documentType:    d.documentType,
+              fileName:        d.fileName,
+              uploadedDateText: that._fmtDate(d.uploadedDate),
+              status:          d.status,
+              state:           that._statusState(d.status)
+            };
+          });
       },
 
-      _getOverdueTasks: function (aTasks) {
-        const oToday = new Date();
-        oToday.setHours(0, 0, 0, 0);
-
-        return aTasks.filter(
-          function (oTask) {
-            return (
-              !this._isCompleted(oTask) &&
-              oTask.dueDate &&
-              new Date(oTask.dueDate) < oToday
-            );
-          }.bind(this),
-        );
+      _overdueTasks: function (a) {
+        var now = new Date(); now.setHours(0,0,0,0);
+        var that = this;
+        return a.filter(function (t) {
+          return !that._isCompleted(t) && t.dueDate && new Date(t.dueDate) < now;
+        });
       },
 
-      _isCompleted: function (oItem) {
-        return oItem.status === "Completed" || oItem.status === "Verified";
+      /* ── Helpers ─────────────────────────────────────────── */
+
+      _isCompleted: function (o) {
+        return o.status === "Completed" || o.status === "Verified";
       },
 
-      _mapById: function (aItems) {
-        return aItems.reduce(function (mResult, oItem) {
-          mResult[oItem.ID] = oItem;
-          return mResult;
-        }, {});
+      _mapById: function (a) {
+        return a.reduce(function (m, o) { m[o.ID] = o; return m; }, {});
       },
 
-      _getDepartmentName: function (oEmployee, mDepartments) {
-        const oDepartment = mDepartments[oEmployee.department_ID];
-        return oDepartment
-          ? oDepartment.name
-          : this.getResourceBundle().getText("unassigned");
+      _deptName: function (e, m) {
+        var d = m[e.department_ID];
+        return d ? d.name : "Unassigned";
       },
 
-      _average: function (aItems, sProperty) {
-        if (!aItems.length) {
-          return 0;
-        }
-
-        return (
-          aItems.reduce(function (iTotal, oItem) {
-            return iTotal + Number(oItem[sProperty] || 0);
-          }, 0) / aItems.length
-        );
+      _avg: function (a, p) {
+        if (!a.length) return 0;
+        return a.reduce(function (s, o) { return s + Number(o[p] || 0); }, 0) / a.length;
       },
 
-      _completionRate: function (iCompleted, iTotal) {
-        if (!iTotal) {
-          return 0;
-        }
-
-        return this._round((iCompleted / iTotal) * 100);
+      _rate: function (done, total) {
+        return total ? this._round((done / total) * 100) : 0;
       },
 
-      _kpi: function (vValue, sColor) {
-        return {
-          value: vValue,
-          display: `${vValue}`,
-          color: sColor || "Neutral",
-          state: this._stateFromColor(sColor),
-        };
+      _round: function (v) { return Math.round(Number(v || 0)); },
+
+      _kpi: function (v, c) {
+        return { value: v, display: "" + v, color: c || "Neutral", state: this._colorState(c) };
       },
 
-      _percentKpi: function (iValue) {
-        return {
-          value: iValue,
-          display: `${iValue}%`,
-          color: this._colorFromPercent(iValue),
-          state: this._stateFromPercent(iValue),
-        };
+      _pctKpi: function (v) {
+        return { value: v, display: v + "%", color: this._pctColor(v), state: this._pctState(v) };
       },
 
-      _riskKpi: function (iValue, bRisk) {
-        return {
-          value: iValue,
-          display: `${iValue}`,
-          color: bRisk ? "Critical" : "Good",
-          state: bRisk ? "Error" : "Success",
-        };
+      _riskKpi: function (v, bad) {
+        return { value: v, display: "" + v, color: bad ? "Critical" : "Good", state: bad ? "Error" : "Success" };
       },
 
-      _colorFromPercent: function (iPercent) {
-        if (iPercent >= 85) {
-          return "Good";
-        }
-        if (iPercent >= 60) {
-          return "Critical";
-        }
-        return "Error";
-      },
+      _pctColor: function (p) { return p >= 85 ? "Good" : p >= 60 ? "Critical" : "Error"; },
+      _pctState: function (p) { return p >= 85 ? "Success" : p >= 60 ? "Warning" : "Error"; },
 
-      _stateFromPercent: function (iPercent) {
-        if (iPercent >= 85) {
-          return "Success";
-        }
-        if (iPercent >= 60) {
-          return "Warning";
-        }
-        return "Error";
-      },
-
-      _stateFromColor: function (sColor) {
-        if (sColor === "Good") {
-          return "Success";
-        }
-        if (sColor === "Critical") {
-          return "Warning";
-        }
-        if (sColor === "Error") {
-          return "Error";
-        }
+      _colorState: function (c) {
+        if (c === "Good") return "Success";
+        if (c === "Critical") return "Warning";
+        if (c === "Error") return "Error";
         return "None";
       },
 
-      _stateFromStatus: function (sStatus) {
-        if (
-          sStatus === "Completed" ||
-          sStatus === "Verified" ||
-          sStatus === "Active" ||
-          sStatus === "Available"
-        ) {
-          return "Success";
-        }
-        if (
-          sStatus === "Pending" ||
-          sStatus === "InProgress" ||
-          sStatus === "Uploaded" ||
-          sStatus === "Assigned"
-        ) {
-          return "Warning";
-        }
-        if (
-          sStatus === "Rejected" ||
-          sStatus === "Inactive" ||
-          sStatus === "Critical"
-        ) {
-          return "Error";
-        }
+      _statusState: function (s) {
+        if (s === "Completed" || s === "Verified" || s === "Active" || s === "Available") return "Success";
+        if (s === "Pending" || s === "InProgress" || s === "Uploaded" || s === "Assigned" || s === "Open") return "Warning";
+        if (s === "Rejected" || s === "Inactive" || s === "Critical") return "Error";
         return "Information";
       },
 
-      _stateFromPriority: function (sPriority) {
-        if (sPriority === "Critical" || sPriority === "High") {
-          return "Error";
-        }
-        if (sPriority === "Medium") {
-          return "Warning";
-        }
-        return "Success";
+      _priState: function (p) {
+        return (p === "Critical" || p === "High") ? "Error" : (p === "Medium") ? "Warning" : "Success";
       },
 
-      _formatDate: function (sDate) {
-        if (!sDate) {
-          return "-";
-        }
-
-        return new Date(sDate).toLocaleDateString(undefined, {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-      },
-
-      _formatTimestamp: function (oDate) {
-        return this.getResourceBundle().getText("lastUpdated", [
-          oDate.toLocaleTimeString(undefined, {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        ]);
-      },
-
-      _round: function (vValue) {
-        return Math.round(Number(vValue || 0));
+      _fmtDate: function (s) {
+        if (!s) return "–";
+        return new Date(s).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
       },
 
       _emptyDashboard: function () {
@@ -707,16 +510,16 @@ sap.ui.define(
           session: this._emptySession(),
           kpis: {
             totalEmployees: this._kpi(0),
-            avgProgress: this._percentKpi(0),
+            avgProgress: this._pctKpi(0),
             pendingTasks: this._riskKpi(0, false),
             overdueTasks: this._riskKpi(0, false),
             highPriorityTasks: this._riskKpi(0, false),
             openDocuments: this._riskKpi(0, false),
             availableAssets: this._kpi(0, "Good"),
-            trainingCompletion: this._percentKpi(0),
-            taskClosure: this._percentKpi(0),
-            documentReadiness: this._percentKpi(0),
-            inactiveEmployees: this._riskKpi(0, false),
+            trainingCompletion: this._pctKpi(0),
+            taskClosure: this._pctKpi(0),
+            documentReadiness: this._pctKpi(0),
+            inactiveEmployees: this._riskKpi(0, false)
           },
           departmentProgress: [],
           peopleAtRisk: [],
@@ -724,7 +527,7 @@ sap.ui.define(
           taskDistribution: [],
           assetDistribution: [],
           priorityTasks: [],
-          documentQueue: [],
+          documentQueue: []
         };
       },
 
@@ -733,25 +536,21 @@ sap.ui.define(
           loading: true,
           userId: "",
           displayName: "",
-          userText: this.getResourceBundle().getText("sessionLoading"),
+          userText: "Checking your access...",
           roleText: "",
           accessText: "",
           roles: [],
           access: {
-            employees: false,
-            departments: false,
-            tasks: false,
-            documents: false,
-            assets: false,
-            trainings: false,
-            reports: true,
-          },
+            employees: true,
+            departments: true,
+            tasks: true,
+            documents: true,
+            assets: true,
+            trainings: true,
+            reports: true
+          }
         };
-      },
-
-      getResourceBundle: function () {
-        return this.getOwnerComponent().getModel("i18n").getResourceBundle();
-      },
+      }
     });
-  },
+  }
 );
