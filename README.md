@@ -1,5 +1,42 @@
 # Employee Onboarding Platform
+## 👥 Collaborators
 
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/ashadmuneer">
+        <img src="https://github.com/ashadmuneer.png" width="100px;" alt="ashad muneer"/>
+        <br />
+        <sub><b>Ashad Muneer</b></sub>
+      </a>
+      <br />
+    </td>
+    <td align="center">
+      <a href="https://github.com/Aman-bhai">
+        <img src="https://github.com/Aman-bhai.png" width="100px;" alt="Aman-bhai"/>
+        <br />
+        <sub><b>Aman Soni</b></sub>
+      </a>
+      <br />
+    </td>
+    <td align="center">
+      <a href="https://github.com/paritosh31mishra">
+        <img src="https://github.com/paritosh31mishra.png" width="100px;" alt="paritosh"/>
+        <br />
+        <sub><b>Paritosh Mishra/b></sub>
+      </a>
+      <br />
+    </td>
+    <td align="center">
+      <a href="https://github.com/SatsNik">
+        <img src="https://github.com/SatsNik.png" width="100px;" alt="satender"/>
+        <br />
+        <sub><b>Satyendra Shukla</b></sub>
+      </a>
+      <br />
+    </td>
+  </tr>
+</table>
 Portfolio-quality SAP CAP and Fiori Elements application for managing employee onboarding.
 
 ## Run locally
